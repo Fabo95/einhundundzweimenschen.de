@@ -1,0 +1,11 @@
+/* const sanityClient = require('@sanity/client')
+
+const client = sanityClient({
+  projectId: 'f1mq97xn',
+  dataset: 'production',
+  apiVersion: '2022-06-05', // use current UTC date - see "specifying API version"!
+  token: '', // or leave blank for unauthenticated usage
+  useCdn: false, // `false` if you want to ensure fresh data
+})
+
+export default client */
