@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import { useForm } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 
+import CommonButton from '../Common/CommonButton';
+
 export default function Form(props) {
 
   const [isSubmitShown, setIsSubmitShown] = useState(false)
@@ -16,7 +18,8 @@ export default function Form(props) {
   } = useForm();
 
   /* Funktion die bei Submit des Forms ausgeführt wird */
-  function onSubmit (data) {
+  function onSubmit (data, e) {
+  e.preventDefault()
   const mutations = [{
     create: {
       _type: 'comment',
@@ -59,14 +62,43 @@ export default function Form(props) {
 
   return (
     <form className='input--form' onSubmit={handleSubmit(onSubmit)}>
-      {errors.name && <p className='input--error'>Bitte gib hier deinen Namen an.</p>}
-      <input placeholder='Dein Name' className='input' {...register('name', { required: true })} />
-      {errors.text && <p className='input--error'>Bitte gib hier deinen Kommentar an.</p>}
-      <TextareaAutosize onFocus={handleIsSubmitShown} placeholder='Dein Kommentar' className='input' {...register('text', { required: true })} />
-      {rejectedMsg && <p className='input--error'>{rejectedMsg}</p>}
-      <div className='input--flex'>
-        <input className={submitClass} type="submit" value={"Kommentieren"}/>
-        <div onClick={handleCancelSubmit} className={`${submitClass} input--submit--cancel`}>Abbrechen</div>
+      <div className='input--box'>
+        {errors.name && <p className='input--error'>Bitte gib hier deinen Namen an.</p>}
+        <input placeholder='Dein Name' className='input' {...register('name', { required: true })} />
+      </div>
+      <div className='input--box'>
+        {errors.text && <p className='input--error'>Bitte gib hier deinen Kommentar an.</p>}
+        <TextareaAutosize onFocus={handleIsSubmitShown} placeholder='Dein Kommentar' className='input input--text' {...register('text', { required: true })} />
+      </div>
+      <div className='input--box--submit'>
+        <div className='input--box'>
+          {rejectedMsg && <p className='input--error'>{rejectedMsg}</p>}
+          <CommonButton  
+                      className={submitClass}
+                      delay={200} 
+                      variant="outlined"
+                      type = "submit"
+                      >
+                      Kommentieren
+          </CommonButton>
+          <CommonButton  
+                      className={`${submitClass} input--submit--cancel`}
+                      sx={{
+                        marginLeft: "1em",
+                        color: "#6E6E6E",
+                        background: "#fff",
+                        border: "1px solid #6E6E6E",
+                        '&:hover': {
+                          border:"1px solid #6E6E6E"  
+                      }
+                      }} 
+                      delay={200} 
+                      variant="outlined"
+                      handleCancelSubmit = {handleCancelSubmit}
+                      >
+                      Abbrechen
+          </CommonButton>
+        </div>
       </div>
     </form>
   );

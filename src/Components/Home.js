@@ -1,8 +1,6 @@
 import React, {useRef} from 'react'
 import {ArticleContext} from "../context/ArticleContext"
 import {useLocation} from 'react-router-dom';
-import CommonButton from '../Common/CommonButton';
-
 
 import Swiper from "./Swiper"
 import Preview from './Preview';

@@ -1,6 +1,5 @@
 import React, {useRef} from 'react'
 import {useParams} from "react-router-dom"
-import {HashLink} from 'react-router-hash-link';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
@@ -163,11 +162,20 @@ export default  function Article(props) {
                 {articleBodyEl}
                 {IS_THERE_KNOWLEDGE && getKnowledgeBox()}
                 <h2 className='h2--article h2--article--comment'>Schreibe einen Kommentar</h2>
-                <Form _id = {article._id} handleNewData={handleNewData}/>
+                <Form 
+                    _id = {article._id} 
+                    handleNewData={handleNewData}
+                    />
                 {commentEl}
-                <HashLink onClick={() => handleRead(articleIndex)} className='article__link' state={articleIndex} to='/#preview'>Zurück zur Übersicht - habe alles gelesen</HashLink>
-                <CommonButton  to={`/`} delay={200} variant="outlined" state={articleIndex} handleRead={() => handleRead(articleIndex)}>
-                    Übersicht Test
+                <CommonButton  
+                    sx={{marginTop: "1.5em"}} 
+                    to={`/`} 
+                    delay={200} 
+                    variant="outlined" 
+                    state={articleIndex}   
+                    handleRead={() => handleRead(articleIndex)}
+                    >
+                    Bring mich zurück!
                 </CommonButton>
             </div>
         </div>

@@ -8,9 +8,13 @@ const navigate = useNavigate()
 
   return (
     <Button
+        className={props.className}
         onClick={()=> { 
             props.handleRead && props.handleRead()
-            setTimeout(() => navigate(props.to, {state: props.state }), props.delay)}}
+            props.to && setTimeout(() => navigate(props.to, {state: props.state }), props.delay)
+            props.handleCancelSubmit && setTimeout(() => props.handleCancelSubmit(), props.delay)
+          }}
+        type={props.type}
         variant={props.variant}
         sx={props.sx}
     >

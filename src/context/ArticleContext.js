@@ -14,6 +14,7 @@ function ArticleContextProvider (props) {
     }]
     )
     
+    
     {/* Mit Lazy Initialization */}    
     const [readArr, setReadArr] = React.useState(() => {
         return (

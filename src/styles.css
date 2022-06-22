@@ -432,46 +432,6 @@ section {
   letter-spacing: var(--lspacing--small);
 }
 
-
-
-/* Das hier sind Basic Styles aller Buttons */
-
-.preview__link,
-.article__link,
-.input--submit--shown,
-.input--submit--hidden {
-  display: inline-block;
-  color: var(--color--dark);
-  border-radius: 10px;
-  border: 1px solid var(--color--dark);
-  cursor: pointer;
-  font-weight: var(--fw--bigger);
-  padding: 0.5em 1em;
-  align-self: flex-start;
-  background: var(--color--light--lighter);
-  text-decoration: none;
-  transition: 300ms;
-  font-family: 'Manrope';  
-  font-size: var(--fs--body);
-}
-
-.preview__link {
-  transform: translateY(-50%);
-}
-
-
-.article__link {
-  margin-top: 2.5em;
-}
-
-.preview__link:hover,
-.article__link:hover,
-.input--submit--shown:hover{
-  color: var(--color--light--lighter);
-  background: var(--color--dark);
-
-}
-
 .home__link {
   color: var(--color--dark--darker);
   font-size: var(--fs--small);
@@ -841,8 +801,8 @@ h3 {
   color: var(--color--text);
 }
 
-.input:nth-child(2) {
-  margin-bottom: 1.5em;
+.input--text {
+  margin-bottom: 4em;
 }
 
 .input:focus::placeholder {
@@ -851,34 +811,30 @@ h3 {
 
 .input--error {
   color: var(--color--dark);
-  margin-bottom: 0.3em;
   font-size: var(--fs--small);
   font-weight: var(--fw--bigger);
+  margin-bottom: 0.3em;
+  position: absolute;
+  top: 0;
+  transform: translateY(-110%);
 }
 
 .input--submit--shown {
   font-family: 'Manrope';
-  margin-bottom: 1.5em;
 }
-
-.input--submit--cancel {
-  margin-left: 1em;
-  margin-bottom: 1.5em;
-  color: var(--color--text--light);
-  background: var(--color--light--lighter);
-  border:1px solid var(--color--text--light);
-}
-
-.input--submit--cancel:hover {
-  color: var(--color--text--light);
-  background: var(--color--light--lighter);
-  border:1px solid var(--color--text--light);
-}
-
 
 .input--submit--hidden {
   visibility: hidden;
-  display: none;
+  display: none !important;
+}
+
+.input--box {
+  position: relative;
+}
+
+.input--box--submit {
+  padding-bottom: 2em;
+  margin-top: -2em;
 }
 
 /* Comment */

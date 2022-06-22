@@ -25,8 +25,13 @@ export default function Preview (props) {
             </div>
             <div className='preview__item--img'>
                 <img src={`../images/${props.imgLokal}`} alt="" className='preview--img'></img>
-                <CommonButton to={`/article/${props.index}`} delay={200} variant="outlined">
-                    Erfahre mehr
+                <CommonButton 
+                    to={`/article/${props.index}`} 
+                    delay={200} 
+                    variant="outlined"
+                    sx={{transform: "translateY(-50%)"}}
+                    >
+                    Bring mich zum Artikel
                 </CommonButton>
             </div>
         </div>

@@ -11,6 +11,8 @@ export const commonButtonTheme = createTheme({
               // Some CSS
               fontFamily: 'Manrope',
               background: "rgba(253,253,253)",
+              display: "inline-block",
+              maxHeight: "unset",
               fontSize:"1em",
               fontWeight: 600,
               padding: "0.5em 1em",
@@ -21,7 +23,6 @@ export const commonButtonTheme = createTheme({
               lineHeight: "unset",
               minWidth: "unset",
               letterSpacing: "unset",
-              transform: "translateY(-50%)",
               '&:hover': {
                   border:"1px solid #D9534F",
                   background: "rgba(253,253,253)"
