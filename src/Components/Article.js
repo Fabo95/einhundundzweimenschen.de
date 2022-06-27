@@ -28,7 +28,7 @@ export default  function Article(props) {
 
     /* collator ist eine Funktion mit der ein Natural sort im Argument von sort(HIER) durchgeführt wird -> Elemente werden natürlich sortiert */
     let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-    /* Erstellt mit Object.keys(article) ein Array in dem jedes Element eine property von article ist; wird mit sort() anschließend so Natural sortiert, dass die wieder die ursprüngliche Reihenfolge vorhanden ist (Object.keys behält nicht die Reihenfolge bei) -> jede property ist ein String im Array; mit .reduce() wird anschließend für jede property die bereitgestellte Funktion ausgeführt und ...*/
+    /* Erstellt mit Object.keys(article) ein Array in dem jedes Element eine property von article ist; wird mit sort() anschließend Natural sortiert, dass wieder die ursprüngliche Reihenfolge vorhanden ist (Object.keys behält nicht die Reihenfolge bei) -> jede property ist ein String im Array; mit .reduce() wird anschließend für jede property die bereitgestellte Funktion ausgeführt und ...*/
     let articleFiltered = Object.keys(article).sort(collator.compare).reduce((initArray, property) => {    
         /* ... wenn die property "absatz" beinhaltet und nicht den Buchstaben "w", dann ... 
         (HINT Absätze mit "w" am Anfang sind für Wissenswertes) */
@@ -87,18 +87,16 @@ export default  function Article(props) {
 
         if (isMounting.current) {
             window.scrollTo(0, 0)  
+        }
+        isMounting.current = false
 
-            if(IS_THERE_KNOWLEDGE) {
+        if(IS_THERE_KNOWLEDGE) {
             /* knowledgeBoxHeight für knowledgeBoxStyle identifizieren */
             setKnowledgeBodyHeight(refKnowledgeBody.current.scrollHeight + 2)
 
             /* knowledgeBoxHeight für knowledgeBoxStyle bei Window Rezise anpassen */
             window.addEventListener("resize", handleRezise)
-
             }
-        }
-
-        isMounting.current = false
 
         /* Funktion wird bei Window-Rezise ausgeführt und Updated State-wert knowledgeBoxHeight */
         function handleRezise() {

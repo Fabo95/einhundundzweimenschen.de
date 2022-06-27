@@ -12,7 +12,7 @@ import { faPaw } from '@fortawesome/free-solid-svg-icons';
 export default function useAside () {
 
     const [personCarr, setPersonCarr] = useState(0)
-    const [toggle, setToggle] = useState(false)
+    const [isAsideShown, setIsAsideShown] = useState(false)
 
     function toRight () {
         setPersonCarr(prevPersonCarr => {
@@ -30,10 +30,9 @@ export default function useAside () {
         })
     }
 
-    function toggleMobileMenu () {
-        document.getElementById("root").classList.toggle("toggle")
-        setToggle(prevToggle => {
-            return !prevToggle
+    function toggleIsAsideShown () {
+        setIsAsideShown(prevIsAsideShown => {
+            return !prevIsAsideShown
         })
     }
 
@@ -44,7 +43,6 @@ export default function useAside () {
                     <a className="social__icon" rel="noreferrer" href='https://www.linkedin.com/in/fabian-hinz-9656551b9/' target="_blank"><FontAwesomeIcon icon={faLinkedin} /></a>
                     <a className="social__icon" rel="noreferrer" href='https://github.com/Fabo95' target="_blank"><FontAwesomeIcon icon={faGithub} /></a>
                 </>
-            
             )
         }
 
@@ -69,8 +67,7 @@ export default function useAside () {
 
 
     return (
-
-        [personCarr, toggle, toRight, toLeft, toggleMobileMenu, getIcon]
+        [personCarr, isAsideShown, toRight, toLeft, toggleIsAsideShown, getIcon]
         
     )
 }

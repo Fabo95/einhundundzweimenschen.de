@@ -11,18 +11,20 @@ import matze from "../images/matze.jpeg"
 
 export default function Aside () {
 
-    const [personCarr, toggle, toRight, toLeft, toggleMobileMenu, getIcon] = useAside()
+    const [personCarr, isAsideShown, toRight, toLeft, toggleIsAsideShown, getIcon] = useAside()
+
+    const asideClass = isAsideShown ? "aside--shown" : ""
 
     return (
-        <aside className="aside">
+        <aside className={`aside ${asideClass}`}>
             <div className='aside--flex'>
                 <FontAwesomeIcon className="icon__arrow" icon={faChevronLeft} onClick={toLeft}/>
                 <img className='img__author' src={personCarr===0?fabian:personCarr===1?kerstin:matze} alt="Ein charmanter Kerl / eine charmante Lady / Ein wilder Hund"></img>
                 <FontAwesomeIcon className="icon__arrow" icon={faChevronRight} onClick={toRight} />
             </div>
             <div className='aside--toggle--box'> 
-                <div className='aside--toggle--box--item' onClick={toggleMobileMenu}>
-                    <FontAwesomeIcon className="icon__toggle" icon={toggle? faChevronRight: faChevronLeft} />
+                <div className='aside--toggle--box--item' onClick={toggleIsAsideShown}>
+                    <FontAwesomeIcon className="icon__toggle" icon={isAsideShown? faChevronRight: faChevronLeft} />
                 </div>
             </div>
             <h3 className="name__author">

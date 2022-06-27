@@ -202,7 +202,6 @@ section {
   transition: 300ms;
   z-index: 1;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-
 }
 
 .aside--toggle--box {
@@ -228,7 +227,7 @@ section {
 
 }
 
-.toggle .aside {
+.aside--shown {
   transform: translateX(0);
 }
 
