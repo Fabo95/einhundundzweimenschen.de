@@ -141,6 +141,18 @@ section {
   position: relative;
 }
 
+.footer::after {
+  content: "";
+  background: url(./images/geist3.png);
+  width: 80px;
+  height: 80px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: -4rem;
+  right: 20%;
+}
+
 
 
 .footer--flex {

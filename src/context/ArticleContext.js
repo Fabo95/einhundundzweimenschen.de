@@ -46,16 +46,16 @@ function ArticleContextProvider (props) {
         }, [])
 
     
-        function handleRead (articleIndex) {
+        function handleRead (articleId) {
             setReadArr(prevReadArr => {
                 return (
-                    !prevReadArr.includes(articleIndex)?
-                    [...prevReadArr, articleIndex]:
+                    !prevReadArr.includes(articleId)?
+                    [...prevReadArr, articleId]:
                     prevReadArr
                 )
             })
 
-            if (!readArr.includes(articleIndex)) {
+            if (!readArr.includes(articleId)) {
                 function addShow() {
                     document.getElementById("root").classList.add("show")
                     }

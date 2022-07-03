@@ -11,7 +11,7 @@ export default function Preview (props) {
     return (
         <div className='preview'>
             <div className='preview__item'>
-                {props.readArr.find(read => read == props.index) &&  <div className='viewed--icon--box'> <span className="tooltip">gelesen</span> <FontAwesomeIcon className='viewed--icon' icon={faCircleCheck} /></div>  }
+                {props.readArr.includes(props._id) && <div className='viewed--icon--box'> <span className="tooltip">gelesen</span> <FontAwesomeIcon className='viewed--icon' icon={faCircleCheck} /></div>  }
                  <p className='preview--topic'>
                     {props.thema}
                 </p>

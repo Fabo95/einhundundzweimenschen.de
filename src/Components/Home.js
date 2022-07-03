@@ -25,6 +25,7 @@ export default function Home (props) {
             <Preview 
                 key = {index}
                 index = {index}
+                _id = {article._id}
                 beschreibung= {article.beschreibung}
                 thema= {article.thema}
                 titel= {article.titel}

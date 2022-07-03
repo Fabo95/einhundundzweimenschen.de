@@ -25,6 +25,7 @@ export default  function Article(props) {
 
     const {articleIndex} = useParams()
     const article = dataArr[articleIndex]
+    const articleId = article._id
 
     /* collator ist eine Funktion mit der ein Natural sort im Argument von sort(HIER) durchgeführt wird -> Elemente werden natürlich sortiert */
     let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
@@ -83,7 +84,6 @@ export default  function Article(props) {
     let isMounting  = useRef(true)
 
     React.useEffect(() => {
-         
 
         if (isMounting.current) {
             window.scrollTo(0, 0)  
@@ -107,7 +107,7 @@ export default  function Article(props) {
           /* Erläuterung QUERY: ich möchte Daten vom _type comment haben UND davon nur diese, die auf die _id des Artikels verweisen der gerade angezeigt wird*/  
           /* Als _type wird comment angegeben, weil das der Name (der im Schema definiert ist) des Dokuments ist von dem ich Daten haben will */
           /* Dokument ist ein Schema für eine Ansammlung von Daten -> bspw. data Dokument ist das Dokument in dem Artikel sind*/   
-        let QUERY = encodeURIComponent(`*[_type == "comment" && data._ref ==${JSON.stringify(article._id)}] | order(_updatedAt desc) {_updatedAt, name, text}`);
+        let QUERY = encodeURIComponent(`*[_type == "comment" && data._ref ==${JSON.stringify(articleId)}] | order(_updatedAt desc) {_updatedAt, name, text}`);
 
         let URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${DATASET}?query=${QUERY}`;
   
@@ -161,7 +161,7 @@ export default  function Article(props) {
                 {IS_THERE_KNOWLEDGE && getKnowledgeBox()}
                 <h2 className='h2--article h2--article--comment'>Schreibe einen Kommentar</h2>
                 <Form 
-                    _id = {article._id} 
+                    _id = {articleId} 
                     handleNewData={handleNewData}
                     />
                 {commentEl}
@@ -171,7 +171,7 @@ export default  function Article(props) {
                     delay={200} 
                     variant="outlined" 
                     state={articleIndex}   
-                    handleRead={() => handleRead(articleIndex)}
+                    handleRead={() => handleRead(articleId)}
                     >
                     Bring mich zurück!
                 </CommonButton>
