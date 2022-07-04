@@ -13,7 +13,7 @@ export default function Aside () {
 
     const [personCarr, isAsideShown, toRight, toLeft, toggleIsAsideShown, getIcon] = useAside()
 
-    const asideClass = isAsideShown ? "aside--shown" : ""
+    const asideClass = isAsideShown ? "showAside" : ""
 
     return (
         <aside className={`aside ${asideClass}`}>

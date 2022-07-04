@@ -11,14 +11,14 @@ import { faArrowTurnDown } from '@fortawesome/free-solid-svg-icons';
 
 export default function Home (props) {
 
-    const {dataArr, readArr} = React.useContext(ArticleContext)
+    const {dataArr, readArr, isReadBoxShown} = React.useContext(ArticleContext)
     
     const [readArticle, setReadArticle] = React.useState({titel: null})
 
+    const readBoxClass = isReadBoxShown ? "showReadBox" : ""
+
     const location = useLocation()
     const ref = useRef(null)
-
-    console.log(location)
 
         let dataElementsArr = dataArr.map((article, index) => {
             return (
@@ -36,20 +36,13 @@ export default function Home (props) {
         )
 
     React.useEffect(() => {
-
     if (!location.state) {
             window.scrollTo(0, 0)
     }
-
     else if (location.state) {
         setReadArticle(dataArr[location.state])
-
         ref.current.scrollIntoView()
-
-
         }
-
-        
     },[location])
 
 
@@ -77,10 +70,12 @@ export default function Home (props) {
                 <h2 className='h2--home h2--home--preview'>
                     Zeug zum lesen - ohne Superlative und Verschnörkelung.
                 </h2>
+                <div className={`${readBoxClass}`}>
                     {readArticle.titel && 
                     <div className='read--box'>
                         <p className='read--message'>"{readArticle.titel}" <br />wurde als gelesen markiert.</p>
                     </div>}
+                </div>
                 {dataElementsArr}
             </section>
         </div>

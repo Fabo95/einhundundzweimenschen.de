@@ -13,6 +13,7 @@ function ArticleContextProvider (props) {
         imgLokal: ""
     }]
     )
+    const [isReadBoxShown, setIsReadBoxShown] = useState(false)
     
     
     {/* Mit Lazy Initialization */}    
@@ -25,9 +26,9 @@ function ArticleContextProvider (props) {
         })
         
     useEffect(() => {
-        let PROJECT_ID = process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID;
-        let DATASET = "production";
-        let QUERY = encodeURIComponent('*[_type == "data"] | order(_createdAt desc)');
+        const PROJECT_ID = process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID;
+        const DATASET = "production";
+        const QUERY = encodeURIComponent('*[_type == "data"] | order(_createdAt desc)');
 
 
         // Compose the URL for your project's endpoint and add the query
@@ -44,8 +45,6 @@ function ArticleContextProvider (props) {
             })
             
         }, [])
-
-    
         function handleRead (articleId) {
             setReadArr(prevReadArr => {
                 return (
@@ -56,17 +55,8 @@ function ArticleContextProvider (props) {
             })
 
             if (!readArr.includes(articleId)) {
-                function addShow() {
-                    document.getElementById("root").classList.add("show")
-                    }
-            
-                    setTimeout(addShow, 500)
-    
-                    function removeShow() {
-                    document.getElementById("root").classList.remove("show")
-                    }
-    
-                    setTimeout(removeShow, 6000)
+                setTimeout(() => setIsReadBoxShown(true), 500)
+                setTimeout(() => setIsReadBoxShown(false), 6000)
             } 
         }
 
@@ -85,7 +75,7 @@ function ArticleContextProvider (props) {
         /* HINT: Wenn man im return einer Funktion a (ArticleContextProvider), eine Funktion b (<App />) called, dann returned die Funktion a den return der Funktion b - Hier <App /> gewrapped in ArticleContext.Provider, damit an den Subtree von <App /> Data / Logik provided wird*/
         return (
             <ThemeProvider theme={commonButtonTheme}>
-                <ArticleContext.Provider value={{dataArr, readArr, handleRead}}>
+                <ArticleContext.Provider value={{dataArr, readArr, handleRead, isReadBoxShown}}>
                     {props.component}
                 </ArticleContext.Provider>
             </ThemeProvider>

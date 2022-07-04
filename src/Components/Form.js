@@ -8,7 +8,7 @@ export default function Form(props) {
 
   const [isSubmitShown, setIsSubmitShown] = useState(false)
   const [rejectedMsg, setRejectedMsg] = useState(null)
-  const submitClass = isSubmitShown? "input--submit--shown" : "input--submit--hidden"
+  const submitClass = isSubmitShown? "showSubmit" : "hideSubmit"
 
   const {
     register,

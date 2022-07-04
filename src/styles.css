@@ -239,7 +239,7 @@ section {
 
 }
 
-.aside--shown {
+.showAside {
   transform: translateX(0);
 }
 
@@ -354,7 +354,7 @@ section {
 
 /* Read Info */
 
-.show .read--box {
+.showReadBox .read--box {
   opacity: 1;
   transform: translateX(0);
   transition: 500ms;
@@ -830,11 +830,11 @@ h3 {
   transform: translateY(-110%);
 }
 
-.input--submit--shown {
+.showSubmit {
   font-family: 'Manrope';
 }
 
-.input--submit--hidden {
+.hideSubmit {
   visibility: hidden;
   display: none !important;
 }
