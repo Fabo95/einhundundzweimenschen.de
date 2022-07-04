@@ -1,26 +1,45 @@
-import React, {useRef} from 'react'
+import React, {useRef, useEffect} from 'react'
 import {ArticleContext} from "../context/ArticleContext"
 import {useLocation} from 'react-router-dom';
-
-import Swiper from "./Swiper"
-import Preview from './Preview';
-
-
+import { DotWave } from '@uiball/loaders'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowTurnDown } from '@fortawesome/free-solid-svg-icons';
 
+import {useSelector, useDispatch} from "react-redux"
+
+import {selectArticles} from "../redux/articleData"
+import {selectIsArticleDataLoading} from "../redux/articleData"
+import {selectIsArticleDataFailed} from "../redux/articleData"
+
+import {selectIsReadBoxShown} from "../redux/readArticle"
+
+import Swiper from "./Swiper"
+import Preview from './Preview'
+import geist from "../images/geist4.png"
+
 export default function Home (props) {
 
-    const {dataArr, readArr, isReadBoxShown} = React.useContext(ArticleContext)
+    const dispatch = useDispatch()
+
+
+    const articles = useSelector(selectArticles)
+    const isArticleDataLoading = useSelector(selectIsArticleDataLoading)
+    const isArticleDataFailed = useSelector(selectIsArticleDataFailed)
+
+    const isReadBoxShown = useSelector(selectIsReadBoxShown)
+    const readBoxClass = isReadBoxShown ? "showReadBox" : ""
+
+    console.log(articles)
+
+    const {readArr} = React.useContext(ArticleContext)
     
     const [readArticle, setReadArticle] = React.useState({titel: null})
 
-    const readBoxClass = isReadBoxShown ? "showReadBox" : ""
 
     const location = useLocation()
     const ref = useRef(null)
 
-        let dataElementsArr = dataArr.map((article, index) => {
+        const articleEl = articles.map((article, index) => {
             return (
             <Preview 
                 key = {index}
@@ -35,17 +54,37 @@ export default function Home (props) {
         }
         )
 
+
     React.useEffect(() => {
     if (!location.state) {
             window.scrollTo(0, 0)
     }
-    else if (location.state) {
-        setReadArticle(dataArr[location.state])
+
+
+    else if (location.state ) {
+        setReadArticle(articles[location.state])  
         ref.current.scrollIntoView()
         }
     },[location])
 
-
+    function promiseBasedJSX () {
+        if (isArticleDataLoading) {
+            return (<div className='home--loading'><DotWave size={50} speed={1} color="#D9534F" /></div> )
+        }
+        else if (isArticleDataFailed) {
+            return (
+            <div className='home--loading'>
+                <div>
+                    <img className='promise--rejected--geist' src={geist} alt="Ein verärgerter Geist"></img>
+                    <p className=''>Da lief etwas schief...</p>
+                </div>
+            </div>)
+        }
+    
+        else {
+           return articleEl
+        }
+    }
     return (
         <div>
             <main className='main'>
@@ -76,7 +115,7 @@ export default function Home (props) {
                         <p className='read--message'>"{readArticle.titel}" <br />wurde als gelesen markiert.</p>
                     </div>}
                 </div>
-                {dataElementsArr}
+                {promiseBasedJSX()}
             </section>
         </div>
     )   

@@ -124,14 +124,23 @@ section {
 
 /* Loading */
 
-.loading {
+.app--loading {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.home--loading {
+  height: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.promise--rejected--geist {
+  width: 60px;
+}
 /* FOOTER */
 
 .footer {
@@ -904,6 +913,9 @@ h3 {
     right: 15%;
   }
 
+  .promise--rejected--geist {
+    width: 50px;
+  } 
 
 
 }

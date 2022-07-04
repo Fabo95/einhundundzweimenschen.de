@@ -1,10 +1,17 @@
 import React, {useRef} from 'react'
 import {useParams} from "react-router-dom"
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
-import {ArticleContext} from "../context/ArticleContext"
+import {useSelector, useDispatch} from "react-redux"
+
+import {selectArticles} from "../redux/articleData"
+
+import {selectIsArticleDataLoading} from "../redux/articleData"
+
+import {addArticleId} from "../redux/readArticle"
+import {toggleReadBoxShown} from "../redux/readArticle"
+
 import ArticleBodyPart from './ArticleBodyPart';
 import Comment from './Comment';
 import Form from './Form';
@@ -12,20 +19,32 @@ import CommonButton from '../Common/CommonButton';
 
 
 
+
 export default  function Article(props) {
 
-    const {dataArr, handleRead} = React.useContext(ArticleContext)
-    
+    const dispatch = useDispatch()
+    const isArticleDataLoading = useSelector(selectIsArticleDataLoading)
 
+    const {articleIndex} = useParams()
+
+    const articles = useSelector(selectArticles)
+    const article = articles[articleIndex]
+    const articleId = article._id 
+
+    console.log(article)
+
+    function handleRead() {
+       setTimeout(() => {dispatch(toggleReadBoxShown())}, 400) 
+       setTimeout(() => {dispatch(toggleReadBoxShown())}, 6000) 
+    }
+ 
     const [commentArr, setCommentArr] = React.useState([{name: "", text: "", _updatedAt: ""}])
     const [newData, setNewData] = React.useState(false)
 
     const [isKnowledgeBodyShown, setIsKnowledgeBodyShown] = React.useState(false)
     const [knowledgeBodyHeight, setKnowledgeBodyHeight] = React.useState(0)
 
-    const {articleIndex} = useParams()
-    const article = dataArr[articleIndex]
-    const articleId = article._id
+
 
     /* collator ist eine Funktion mit der ein Natural sort im Argument von sort(HIER) durchgeführt wird -> Elemente werden natürlich sortiert */
     let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
@@ -40,7 +59,7 @@ export default  function Article(props) {
             initArray.push({[property]: article[property], [`titel${absatzNum}`]: article[`titel${absatzNum}`]})
         }
         return initArray
-    }, [])
+    }, []) 
     /* articleBodyEl ist ein Array und jedes beinhaltet JSX zu einem articleBodyPart */
     const articleBodyEl = articleFiltered.map((articleBodyPart, index) => <ArticleBodyPart key = {index} {...articleBodyPart}/>)
 
@@ -171,7 +190,7 @@ export default  function Article(props) {
                     delay={200} 
                     variant="outlined" 
                     state={articleIndex}   
-                    handleRead={() => handleRead(articleId)}
+                    handleRead={handleRead}
                     >
                     Bring mich zurück!
                 </CommonButton>
@@ -180,3 +199,5 @@ export default  function Article(props) {
 
     )
 }
+
+

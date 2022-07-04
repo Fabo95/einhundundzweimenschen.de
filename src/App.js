@@ -1,5 +1,4 @@
-import React from 'react'
-
+import React, {useEffect} from 'react'
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import { DotWave } from '@uiball/loaders'
 
@@ -13,18 +12,18 @@ import Datenschutz from './Components/Datenschutz';
 
 export default function App () {
 
-    const [loading, setLoading] = React.useState(true)
+    const [isLoading, setIsLoading] = React.useState(true)
 
     React.useEffect(() => {
-            function handleLoading() {
-                setLoading(false)
+            function handleIsLoading() {
+                setIsLoading(false)
             }
-            setTimeout(handleLoading, 1000)
+            setTimeout(handleIsLoading, 1000)
         }, [])
 
     return (
-        loading ?
-        <div className='loading'>
+        isLoading ?
+        <div className='app--loading'>
            <DotWave size={70} speed={1} color="#D9534F" />
         </div>:
         <Router>
