@@ -4,6 +4,7 @@ import {Provider} from "react-redux"
 
 import { store } from "../redux";
 import {loadAllArticles} from "../redux/articleData"
+import { loadAllComments } from "../redux/commentData";
 
 import { commonButtonTheme } from "../theme/commonButtonTheme";
 
@@ -50,8 +51,9 @@ function ArticleContextProvider (props) {
             }
         }, [readArr])
 
-
         store.dispatch(loadAllArticles())
+        store.dispatch(loadAllComments())
+        store.subscribe(() => console.log(store.getState()))
 
         /* HINT: Wenn man im return einer Funktion a (ArticleContextProvider), eine Funktion b (<App />) called, dann returned die Funktion a den return der Funktion b - Hier <App /> gewrapped in ArticleContext.Provider, damit an den Subtree von <App /> Data / Logik provided wird*/
 

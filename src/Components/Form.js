@@ -28,7 +28,8 @@ export default function Form(props) {
         _ref: props._id,
       },
       name: data.name,
-      text: data.text
+      text: data.text,
+      id: props._id
     }
   }]
 

@@ -17,7 +17,6 @@ const articleDataSlice = createSlice({
     initialState: {
         status: "idle",
         articles: [{
-            _id: 0,
             beschreibung: "",
             thema: "",
             titel: "",
@@ -54,5 +53,3 @@ export const selectIsArticleDataFailed = (state) => state.articleData.isArticleD
 
 /* wird als articleDataReducer in index.js importiert */
 export default articleDataSlice.reducer
-
-

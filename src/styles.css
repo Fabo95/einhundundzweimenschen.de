@@ -124,15 +124,8 @@ section {
 
 /* Loading */
 
-.app--loading {
+.loading {
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.home--loading {
-  height: 30vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -867,9 +860,6 @@ h3 {
   background: rgba(34,34,34,0.05);
 }
 
-.comment:nth-of-type(1){
-  margin-top: 3em;
-}
 
 .comment--flex {
   display: flex;

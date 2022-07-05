@@ -7,35 +7,48 @@ import {useSelector, useDispatch} from "react-redux"
 
 import {selectArticles} from "../redux/articleData"
 
-import {selectIsArticleDataLoading} from "../redux/articleData"
-
 import {addArticleId} from "../redux/readArticle"
-import {toggleReadBoxShown} from "../redux/readArticle"
+import {selectReadArticleIds} from "../redux/readArticle"
+import {setCurrentRead} from "../redux/readArticle"
+import {toggleIsReadBoxShown} from "../redux/readArticle"
+
+import {selectComments} from "../redux/commentData"
 
 import ArticleBodyPart from './ArticleBodyPart';
 import Comment from './Comment';
 import Form from './Form';
 import CommonButton from '../Common/CommonButton';
 
-
-
-
 export default  function Article(props) {
 
     const dispatch = useDispatch()
-    const isArticleDataLoading = useSelector(selectIsArticleDataLoading)
 
     const {articleIndex} = useParams()
 
     const articles = useSelector(selectArticles)
+
+    const readArticleIds = useSelector(selectReadArticleIds)
+
+    const comments = useSelector(selectComments)
+
     const article = articles[articleIndex]
     const articleId = article._id 
 
-    console.log(article)
+    /* comments ist ein Objekt, mit den articleIds als properties und arrays als property-values -> Zugriff mit [], weil articleIds Nummern sind. commentsByArticle ist ein Array, in dem jedes Element ein Comment für diesen Article ist*/
+    const commentsByArticle = comments[articleId]
 
-    function handleRead() {
-       setTimeout(() => {dispatch(toggleReadBoxShown())}, 400) 
-       setTimeout(() => {dispatch(toggleReadBoxShown())}, 6000) 
+    console.log(commentsByArticle)
+
+    function handleReadArticle() {
+
+       dispatch(addArticleId(articleId))
+
+       if(!readArticleIds.includes(articleId)) {
+        dispatch(setCurrentRead(article))
+        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 400) 
+        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 6000) 
+        localStorage.setItem("readArticleIds", JSON.stringify([...readArticleIds, articleId]))
+       }
     }
  
     const [commentArr, setCommentArr] = React.useState([{name: "", text: "", _updatedAt: ""}])
@@ -43,8 +56,6 @@ export default  function Article(props) {
 
     const [isKnowledgeBodyShown, setIsKnowledgeBodyShown] = React.useState(false)
     const [knowledgeBodyHeight, setKnowledgeBodyHeight] = React.useState(0)
-
-
 
     /* collator ist eine Funktion mit der ein Natural sort im Argument von sort(HIER) durchgeführt wird -> Elemente werden natürlich sortiert */
     let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
@@ -96,9 +107,10 @@ export default  function Article(props) {
         )
     }
 
-    const commentEl = commentArr.map((comment, index) => {
+    const commentsByArticleEl = commentsByArticle.map((comment, index) => {
         return <Comment key={index} name={comment.name} text={comment.text} date={comment._updatedAt} />
     })
+
 
     let isMounting  = useRef(true)
 
@@ -126,7 +138,7 @@ export default  function Article(props) {
           /* Erläuterung QUERY: ich möchte Daten vom _type comment haben UND davon nur diese, die auf die _id des Artikels verweisen der gerade angezeigt wird*/  
           /* Als _type wird comment angegeben, weil das der Name (der im Schema definiert ist) des Dokuments ist von dem ich Daten haben will */
           /* Dokument ist ein Schema für eine Ansammlung von Daten -> bspw. data Dokument ist das Dokument in dem Artikel sind*/   
-        let QUERY = encodeURIComponent(`*[_type == "comment" && data._ref ==${JSON.stringify(articleId)}] | order(_updatedAt desc) {_updatedAt, name, text}`);
+        let QUERY = encodeURIComponent(`*[_type == "comment" ] | order(_updatedAt desc) {_updatedAt, name, text, id}`);
 
         let URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${DATASET}?query=${QUERY}`;
   
@@ -149,11 +161,11 @@ export default  function Article(props) {
         }, [newData])
 
 
-        function handleNewData () {
+    function handleNewData () {
             setNewData(prevNewData => !prevNewData)
         }
 
-        function toggleIsKnowledgeBodyShown () {
+    function toggleIsKnowledgeBodyShown () {
             setIsKnowledgeBodyShown(previsKnowledgeBodyShown => !previsKnowledgeBodyShown) 
         }
 
@@ -183,14 +195,14 @@ export default  function Article(props) {
                     _id = {articleId} 
                     handleNewData={handleNewData}
                     />
-                {commentEl}
+                {commentsByArticleEl}
                 <CommonButton  
                     sx={{marginTop: "1.5em"}} 
                     to={`/`} 
                     delay={200} 
                     variant="outlined" 
                     state={articleIndex}   
-                    handleRead={handleRead}
+                    handleRead={handleReadArticle}
                     >
                     Bring mich zurück!
                 </CommonButton>
@@ -199,5 +211,3 @@ export default  function Article(props) {
 
     )
 }
-
-
