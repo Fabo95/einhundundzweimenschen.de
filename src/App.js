@@ -7,6 +7,9 @@ import {useSelector} from "react-redux"
 import {selectIsArticleDataLoading} from "./redux/articleData"
 import {selectIsArticleDataFailed} from "./redux/articleData"
 
+import {selectIsCommentDataLoading} from "./redux/commentData"
+import {selectIsCommentDataFailed} from "./redux/commentData"
+
 import Navbar from './Components/Navbar'
 import Aside from "./Components/Aside"
 import Home from "./Components/Home" 
@@ -20,6 +23,8 @@ export default function App () {
     const isArticleDataLoading = useSelector(selectIsArticleDataLoading)
     const isArticleDataFailed = useSelector(selectIsArticleDataFailed)
 
+    const isCommentDataLoading = useSelector(selectIsCommentDataLoading)
+    const isCommentDataFailed = useSelector(selectIsCommentDataFailed)
     const [isLoading, setIsLoading] = React.useState(true)
 
     React.useEffect(() => {
@@ -31,10 +36,10 @@ export default function App () {
 
 
     function promiseBasedJSX () {
-        if (isArticleDataLoading) {
+        if (isArticleDataLoading || isCommentDataLoading)  {
             return (<div className='loading'><DotWave size={70} speed={1} color="#D9534F" /></div> )
         }
-        else if (isArticleDataFailed) {
+        else if (isArticleDataFailed || isCommentDataFailed) {
             return (
             <div className='loading'>
                 <div>
@@ -72,4 +77,5 @@ export default function App () {
         promiseBasedJSX()
     )
 }
+
 

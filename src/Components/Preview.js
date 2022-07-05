@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useSelector } from 'react-redux';
 
-import {selectReadArticleIds} from "../redux/readArticle"
+import {selectReadArticleIds} from "../redux/article"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';

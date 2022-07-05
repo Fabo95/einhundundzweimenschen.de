@@ -22,7 +22,7 @@ const commentDataSlice = createSlice({
         comments: {
             id: []
         },
-        isCommentDataLoading: false,
+        isCommentDataLoading: true,
         isCommentDataFailed: false
     },
     extraReducers: {

@@ -7,12 +7,17 @@ import {useSelector, useDispatch} from "react-redux"
 
 import {selectArticles} from "../redux/articleData"
 
-import {addArticleId} from "../redux/readArticle"
-import {selectReadArticleIds} from "../redux/readArticle"
-import {setCurrentRead} from "../redux/readArticle"
-import {toggleIsReadBoxShown} from "../redux/readArticle"
+import {selectReadArticleIds} from "../redux/article"
+import {selectIsKnowledgeBodyShown} from "../redux/article"
+import {selectKnowledgeBodyHeight} from "../redux/article"
 
 import {selectComments} from "../redux/commentData"
+
+import {addArticleId} from "../redux/article"
+import {setCurrentRead} from "../redux/article"
+import {toggleIsReadBoxShown} from "../redux/article"
+import {toggleIsKnowledgeBodyShown} from "../redux/article"
+import {setKnowledgeBodyHeight} from "../redux/article"
 
 import ArticleBodyPart from './ArticleBodyPart';
 import Comment from './Comment';
@@ -28,16 +33,17 @@ export default  function Article(props) {
     const articles = useSelector(selectArticles)
 
     const readArticleIds = useSelector(selectReadArticleIds)
+    const isKnowledgeBodyShown = useSelector(selectIsKnowledgeBodyShown)
+    const knowledgeBodyHeight = useSelector(selectKnowledgeBodyHeight)
 
     const comments = useSelector(selectComments)
 
     const article = articles[articleIndex]
     const articleId = article._id 
 
-    /* comments ist ein Objekt, mit den articleIds als properties und arrays als property-values -> Zugriff mit [], weil articleIds Nummern sind. commentsByArticle ist ein Array, in dem jedes Element ein Comment für diesen Article ist*/
-    const commentsByArticle = comments[articleId]
-
-    console.log(commentsByArticle)
+    /* comments ist ein Objekt, mit den articleIds als properties und arrays als property-values -> jedes Array beinhaltet Comments für eine articleId also einen Aricle; HINT: Zugriff mit [articleId], weil articleIds Nummern sind. 
+    Somit ist commentsByArticle  ein Array, in dem jedes Element ein Comment für diesen Article ist*/
+    const commentsByArticle = comments[articleId] ? comments[articleId] : []
 
     function handleReadArticle() {
 
@@ -51,11 +57,7 @@ export default  function Article(props) {
        }
     }
  
-    const [commentArr, setCommentArr] = React.useState([{name: "", text: "", _updatedAt: ""}])
     const [newData, setNewData] = React.useState(false)
-
-    const [isKnowledgeBodyShown, setIsKnowledgeBodyShown] = React.useState(false)
-    const [knowledgeBodyHeight, setKnowledgeBodyHeight] = React.useState(0)
 
     /* collator ist eine Funktion mit der ein Natural sort im Argument von sort(HIER) durchgeführt wird -> Elemente werden natürlich sortiert */
     let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
@@ -91,8 +93,8 @@ export default  function Article(props) {
                         Wissenswertes {article.wtitel}
                     </h3>
                     {isKnowledgeBodyShown ?
-                    <FontAwesomeIcon onClick={toggleIsKnowledgeBodyShown} className={`knowledge--icon ${knowledgeIconClass}`} icon={faMinus} /> :
-                    <FontAwesomeIcon onClick={toggleIsKnowledgeBodyShown} className={`knowledge--icon ${knowledgeIconClass}`} icon={faPlus} />}
+                    <FontAwesomeIcon onClick={() => dispatch(toggleIsKnowledgeBodyShown()) } className={`knowledge--icon ${knowledgeIconClass}`} icon={faMinus} /> :
+                    <FontAwesomeIcon onClick={() => dispatch(toggleIsKnowledgeBodyShown())} className={`knowledge--icon ${knowledgeIconClass}`} icon={faPlus} />}
                 </div>
                 <div style={knowledgeBoxStyle} className={`article--knowledge--box`}>
                     <div ref={refKnowledgeBody} className={`article--knowledge--body ${knowledgeBodyClass}`}>
@@ -123,7 +125,7 @@ export default  function Article(props) {
 
         if(IS_THERE_KNOWLEDGE) {
             /* knowledgeBoxHeight für knowledgeBoxStyle identifizieren */
-            setKnowledgeBodyHeight(refKnowledgeBody.current.scrollHeight + 2)
+            dispatch(setKnowledgeBodyHeight(refKnowledgeBody.current.scrollHeight + 2))
 
             /* knowledgeBoxHeight für knowledgeBoxStyle bei Window Rezise anpassen */
             window.addEventListener("resize", handleRezise)
@@ -131,42 +133,19 @@ export default  function Article(props) {
 
         /* Funktion wird bei Window-Rezise ausgeführt und Updated State-wert knowledgeBoxHeight */
         function handleRezise() {
-            setKnowledgeBodyHeight(refKnowledgeBody.current.scrollHeight + 2) }
-
-        let PROJECT_ID = process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID;
-        let DATASET = "production";
-          /* Erläuterung QUERY: ich möchte Daten vom _type comment haben UND davon nur diese, die auf die _id des Artikels verweisen der gerade angezeigt wird*/  
-          /* Als _type wird comment angegeben, weil das der Name (der im Schema definiert ist) des Dokuments ist von dem ich Daten haben will */
-          /* Dokument ist ein Schema für eine Ansammlung von Daten -> bspw. data Dokument ist das Dokument in dem Artikel sind*/   
-        let QUERY = encodeURIComponent(`*[_type == "comment" ] | order(_updatedAt desc) {_updatedAt, name, text, id}`);
-
-        let URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${DATASET}?query=${QUERY}`;
-  
-          async function getApiData () {
-            let response = await fetch(URL) 
-            let data = await response.json() 
-            return data }
-
-            getApiData().then(data => {
-                setCommentArr(data.result)
-            })
+            dispatch(setKnowledgeBodyHeight(refKnowledgeBody.current.scrollHeight + 2)) }
 
              /* Clean-up Funktion die EventListener für knowledgeBoxHeight, bei Unmounting und erneuter Ausführung von Effekt-Funktion removed */
             return (
                 IS_THERE_KNOWLEDGE && function () { 
                     window.removeEventListener("resize", handleRezise)} 
+                    
                 )
-                
-            
         }, [newData])
 
 
     function handleNewData () {
             setNewData(prevNewData => !prevNewData)
-        }
-
-    function toggleIsKnowledgeBodyShown () {
-            setIsKnowledgeBodyShown(previsKnowledgeBodyShown => !previsKnowledgeBodyShown) 
         }
 
     return (    
