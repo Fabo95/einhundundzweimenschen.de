@@ -25,6 +25,7 @@ export default function App () {
 
     const isCommentDataLoading = useSelector(selectIsCommentDataLoading)
     const isCommentDataFailed = useSelector(selectIsCommentDataFailed)
+
     const [isLoading, setIsLoading] = React.useState(true)
 
     React.useEffect(() => {
