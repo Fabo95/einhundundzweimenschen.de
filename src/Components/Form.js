@@ -13,8 +13,6 @@ import CommonButton from '../Common/CommonButton';
 
 export default function Form(props) {
 
-  console.log("RANNNNNN")
-
   const dispatch = useDispatch()
 
   const isCommentDataPostingFailed = useSelector(selectIsCommentDataPostingFailed)
