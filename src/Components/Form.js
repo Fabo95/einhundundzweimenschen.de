@@ -2,9 +2,15 @@ import React, {useState} from 'react';
 import { useForm } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 
+import { useDispatch } from 'react-redux';
+
+import {postCommentByArticle} from "../redux/commentData"
+
 import CommonButton from '../Common/CommonButton';
 
 export default function Form(props) {
+
+  const dispatch = useDispatch()
 
   const [isSubmitShown, setIsSubmitShown] = useState(false)
   const [rejectedMsg, setRejectedMsg] = useState(null)
@@ -19,21 +25,39 @@ export default function Form(props) {
 
   /* Funktion die bei Submit des Forms ausgeführt wird */
   function onSubmit (data, e) {
-  e.preventDefault()
-  const mutations = [{
-    create: {
-      _type: 'comment',
-      data: {
-        _type: 'reference',
-        _ref: props._id,
+    console.log("Form run")
+    e.preventDefault()
+
+    const mutations = [{
+      create: {
+        _type: 'comment',
+        data: {
+          _type: 'reference',
+          _ref: props._id,
+        },
+        name: data.name,
+        text: data.text,
+        id: props._id
+      }
+    }]
+
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${process.env.REACT_APP_SANITY_API_TOKEN}`
       },
+      body: JSON.stringify({mutations})
+    }
+
+    dispatch(postCommentByArticle({comment: {
       name: data.name,
       text: data.text,
-      id: props._id
-    }
-  }]
+      id: props._id},
+      requestOptions: requestOptions}))
 
-    fetch(`https://${process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2021-06-07/data/mutate/production`, {
+
+/*    fetch(`https://${process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2021-06-07/data/mutate/production`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
@@ -43,14 +67,15 @@ export default function Form(props) {
     })
       .then(response => response.json())
       .then(result => {
+        console.log(result)
         reset()
         setIsSubmitShown(false)
-        props.handleNewData()
+        props.toggleNewData()
         })
       .catch(error => {
-        setRejectedMsg("Das hat leider nicht funktioniert...")})
+        setRejectedMsg("Das hat leider nicht funktioniert...")})  */
     };
-
+ 
   function handleIsSubmitShown () {
     setIsSubmitShown(true)
   }
@@ -58,7 +83,7 @@ export default function Form(props) {
   function handleCancelSubmit () {
     setIsSubmitShown(false)
     setRejectedMsg(null)
-    reset()
+    reset() 
   }
 
   return (

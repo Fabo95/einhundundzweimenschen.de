@@ -5,10 +5,10 @@ import { DotWave } from '@uiball/loaders'
 import {useSelector} from "react-redux"
 
 import {selectIsArticleDataLoading} from "./redux/articleData"
-import {selectIsArticleDataFailed} from "./redux/articleData"
+import {selectisArticleDataLoadingFailed} from "./redux/articleData"
 
 import {selectIsCommentDataLoading} from "./redux/commentData"
-import {selectIsCommentDataFailed} from "./redux/commentData"
+import {selectisCommentDataLoadingFailed} from "./redux/commentData"
 
 import Navbar from './Components/Navbar'
 import Aside from "./Components/Aside"
@@ -21,10 +21,10 @@ import geist from "./images/geist4.png"
 
 export default function App () {
     const isArticleDataLoading = useSelector(selectIsArticleDataLoading)
-    const isArticleDataFailed = useSelector(selectIsArticleDataFailed)
+    const isArticleDataLoadingFailed = useSelector(selectisArticleDataLoadingFailed)
 
     const isCommentDataLoading = useSelector(selectIsCommentDataLoading)
-    const isCommentDataFailed = useSelector(selectIsCommentDataFailed)
+    const isCommentDataLoadingFailed = useSelector(selectisCommentDataLoadingFailed)
 
     const [isLoading, setIsLoading] = React.useState(true)
 
@@ -40,7 +40,7 @@ export default function App () {
         if (isArticleDataLoading || isCommentDataLoading)  {
             return (<div className='loading'><DotWave size={70} speed={1} color="#D9534F" /></div> )
         }
-        else if (isArticleDataFailed || isCommentDataFailed) {
+        else if (isArticleDataLoadingFailed || isCommentDataLoadingFailed) {
             return (
             <div className='loading'>
                 <div>

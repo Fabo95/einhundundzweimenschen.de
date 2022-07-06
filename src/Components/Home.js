@@ -6,12 +6,9 @@ import { faArrowTurnDown } from '@fortawesome/free-solid-svg-icons';
 import {useSelector, useDispatch} from "react-redux"
 
 import {selectArticles} from "../redux/articleData"
+import {selectCurrentRead} from "../redux/articleData"
+import {selectIsReadBoxShown} from "../redux/articleData"
 
-import {selectCurrentRead} from "../redux/article"
-import {selectIsReadBoxShown} from "../redux/article"
-
-import {toggleIsKnowledgeBodyShown} from "../redux/article"
-import {setKnowledgeBodyHeight} from "../redux/article"
 
 import Swiper from "./Swiper"
 import Preview from './Preview'
@@ -49,8 +46,6 @@ export default function Home (props) {
     }
     else if (location.state ) {
         ref.current.scrollIntoView()
-        dispatch(setKnowledgeBodyHeight(0))
-        dispatch(toggleIsKnowledgeBodyShown(false))
         }
     },[location])
 

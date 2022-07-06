@@ -1,4 +1,4 @@
-import React, {useRef} from 'react'
+import React, {useState, useRef} from 'react'
 import {useParams} from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
@@ -6,18 +6,13 @@ import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import {useSelector, useDispatch} from "react-redux"
 
 import {selectArticles} from "../redux/articleData"
-
-import {selectReadArticleIds} from "../redux/article"
-import {selectIsKnowledgeBodyShown} from "../redux/article"
-import {selectKnowledgeBodyHeight} from "../redux/article"
+import {selectReadArticleIds} from "../redux/articleData"
 
 import {selectComments} from "../redux/commentData"
 
-import {addArticleId} from "../redux/article"
-import {setCurrentRead} from "../redux/article"
-import {toggleIsReadBoxShown} from "../redux/article"
-import {toggleIsKnowledgeBodyShown} from "../redux/article"
-import {setKnowledgeBodyHeight} from "../redux/article"
+import {addArticleId} from "../redux/articleData"
+import {setCurrentRead} from "../redux/articleData"
+import {toggleIsReadBoxShown} from "../redux/articleData"
 
 import ArticleBodyPart from './ArticleBodyPart';
 import Comment from './Comment';
@@ -27,37 +22,19 @@ import CommonButton from '../Common/CommonButton';
 export default  function Article(props) {
 
     const dispatch = useDispatch()
-
     const {articleIndex} = useParams()
 
     const articles = useSelector(selectArticles)
-
     const readArticleIds = useSelector(selectReadArticleIds)
-    const isKnowledgeBodyShown = useSelector(selectIsKnowledgeBodyShown)
-    const knowledgeBodyHeight = useSelector(selectKnowledgeBodyHeight)
 
     const comments = useSelector(selectComments)
 
+    const [newData, setNewData] = useState(false)
+    const [isKnowledgeBodyShown, setIsKnowledgeBodyShown] = useState(false)
+    const [knowledgeBodyHeight, setKnowledgeBodyHeight] = useState(0)
+
     const article = articles[articleIndex]
     const articleId = article._id 
-
-    /* comments ist ein Objekt, mit den articleIds als properties und arrays als property-values -> jedes Array beinhaltet Comments für eine articleId also einen Aricle; HINT: Zugriff mit [articleId], weil articleIds Nummern sind. 
-    Somit ist commentsByArticle  ein Array, in dem jedes Element ein Comment für diesen Article ist*/
-    const commentsByArticle = comments[articleId] ? comments[articleId] : []
-
-    function handleReadArticle() {
-
-       dispatch(addArticleId(articleId))
-
-       if(!readArticleIds.includes(articleId)) {
-        dispatch(setCurrentRead(article))
-        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 400) 
-        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 6000) 
-        localStorage.setItem("readArticleIds", JSON.stringify([...readArticleIds, articleId]))
-       }
-    }
- 
-    const [newData, setNewData] = React.useState(false)
 
     /* collator ist eine Funktion mit der ein Natural sort im Argument von sort(HIER) durchgeführt wird -> Elemente werden natürlich sortiert */
     let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
@@ -85,6 +62,32 @@ export default  function Article(props) {
     const knowledgeBodyClass = isKnowledgeBodyShown ? "showKnowledgeBody" : "" 
     const knowledgeIconClass = isKnowledgeBodyShown ? "rotateIconMinus": "rotateIconPlus"
 
+    /* comments ist ein Objekt, mit den articleIds als properties und arrays als property-values -> jedes Array beinhaltet Comments für eine articleId also einen Aricle; HINT: Zugriff mit [articleId], weil articleIds Nummern sind. 
+    Somit ist commentsByArticle  ein Array, in dem jedes Element ein Comment für diesen Article ist*/
+    const commentsByArticle = comments[articleId] ? comments[articleId] : []
+
+    const commentsByArticleEl = commentsByArticle.map((comment, index) => {
+        return <Comment key={index} name={comment.name} text={comment.text} date={comment._updatedAt} />
+    })
+
+    function handleReadArticle() {
+        dispatch(setCurrentRead(article))
+       if(!readArticleIds.includes(articleId)) {
+        dispatch(addArticleId(articleId))
+        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 400) 
+        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 6000) 
+        localStorage.setItem("readArticleIds", JSON.stringify([...readArticleIds, articleId]))
+       }
+    }
+
+    function toggleIsKnowledgeBodyShown () {
+        setIsKnowledgeBodyShown(prevIsKnowledgeBodyShown => !prevIsKnowledgeBodyShown)
+    }
+
+    function toggleNewData () {
+        setNewData(prevNewData => !prevNewData)
+    }
+
     function getKnowledgeBox() {
         return (
             <>
@@ -93,8 +96,8 @@ export default  function Article(props) {
                         Wissenswertes {article.wtitel}
                     </h3>
                     {isKnowledgeBodyShown ?
-                    <FontAwesomeIcon onClick={() => dispatch(toggleIsKnowledgeBodyShown()) } className={`knowledge--icon ${knowledgeIconClass}`} icon={faMinus} /> :
-                    <FontAwesomeIcon onClick={() => dispatch(toggleIsKnowledgeBodyShown())} className={`knowledge--icon ${knowledgeIconClass}`} icon={faPlus} />}
+                    <FontAwesomeIcon onClick={toggleIsKnowledgeBodyShown} className={`knowledge--icon ${knowledgeIconClass}`} icon={faMinus} /> :
+                    <FontAwesomeIcon onClick={toggleIsKnowledgeBodyShown} className={`knowledge--icon ${knowledgeIconClass}`} icon={faPlus} />}
                 </div>
                 <div style={knowledgeBoxStyle} className={`article--knowledge--box`}>
                     <div ref={refKnowledgeBody} className={`article--knowledge--body ${knowledgeBodyClass}`}>
@@ -109,11 +112,6 @@ export default  function Article(props) {
         )
     }
 
-    const commentsByArticleEl = commentsByArticle.map((comment, index) => {
-        return <Comment key={index} name={comment.name} text={comment.text} date={comment._updatedAt} />
-    })
-
-
     let isMounting  = useRef(true)
 
     React.useEffect(() => {
@@ -125,7 +123,7 @@ export default  function Article(props) {
 
         if(IS_THERE_KNOWLEDGE) {
             /* knowledgeBoxHeight für knowledgeBoxStyle identifizieren */
-            dispatch(setKnowledgeBodyHeight(refKnowledgeBody.current.scrollHeight + 2))
+            setKnowledgeBodyHeight(refKnowledgeBody.current.scrollHeight + 2)
 
             /* knowledgeBoxHeight für knowledgeBoxStyle bei Window Rezise anpassen */
             window.addEventListener("resize", handleRezise)
@@ -133,7 +131,7 @@ export default  function Article(props) {
 
         /* Funktion wird bei Window-Rezise ausgeführt und Updated State-wert knowledgeBoxHeight */
         function handleRezise() {
-            dispatch(setKnowledgeBodyHeight(refKnowledgeBody.current.scrollHeight + 2)) }
+            setKnowledgeBodyHeight(refKnowledgeBody.current.scrollHeight + 2) }
 
              /* Clean-up Funktion die EventListener für knowledgeBoxHeight, bei Unmounting und erneuter Ausführung von Effekt-Funktion removed */
             return (
@@ -142,11 +140,6 @@ export default  function Article(props) {
                     
                 )
         }, [newData])
-
-
-    function handleNewData () {
-            setNewData(prevNewData => !prevNewData)
-        }
 
     return (    
         <div className='article container'>
@@ -172,7 +165,7 @@ export default  function Article(props) {
                 <h2 className='h2--article h2--article--comment'>Schreibe einen Kommentar</h2>
                 <Form 
                     _id = {articleId} 
-                    handleNewData={handleNewData}
+                    toggleNewData={toggleNewData}
                     />
                 {commentsByArticleEl}
                 <CommonButton  
