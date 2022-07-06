@@ -61,6 +61,7 @@ const articleDataSlice = createSlice({
     }
 })
 
+/* TEST */
 export const selectStatus = (state) => state.articleData.statusGet
 export const selectArticles = (state) => state.articleData.articles
 
