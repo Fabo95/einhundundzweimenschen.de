@@ -5,9 +5,6 @@ import {useSelector} from "react-redux"
 import {selectIsArticleDataLoading} from "./redux/articleData"
 import {selectisArticleDataLoadingFailed} from "./redux/articleData"
 
-import {selectIsCommentDataLoading} from "./redux/commentData"
-import {selectisCommentDataLoadingFailed} from "./redux/commentData"
-
 import Navbar from './Components/Navbar'
 import Aside from "./Components/Aside"
 import Home from "./Components/Home" 
@@ -21,9 +18,6 @@ import geist from "./images/geist4.png"
 export default function App () {
     const isArticleDataLoading = useSelector(selectIsArticleDataLoading)
     const isArticleDataLoadingFailed = useSelector(selectisArticleDataLoadingFailed)
-
-    const isCommentDataLoading = useSelector(selectIsCommentDataLoading)
-    const isCommentDataLoadingFailed = useSelector(selectisCommentDataLoadingFailed)
 
     function promiseBasedJSX () {
         if (isArticleDataLoading )  {

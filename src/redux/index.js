@@ -3,7 +3,6 @@ import { configureStore} from "@reduxjs/toolkit";
 import articleDataReducer from "./articleData"
 import commentDataReducer from "./commentData";
 
-
 export const store = configureStore({
     reducer: {
         articleData: articleDataReducer,

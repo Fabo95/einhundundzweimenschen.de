@@ -47,7 +47,6 @@ const commentDataSlice = createSlice({
             state.isCommentDataPostingFailed = action.payload
         }
     },
-
     extraReducers: {
         [loadAllComments.pending]: (state, action) => {
             state.statusGet = "pending"
@@ -102,5 +101,6 @@ export const selectIsCommentDataPostingFailed = (state) => state.commentData.isC
 
 export const {setIsCommentDataPostingFailed} = commentDataSlice.actions
 
+/* wird als commentDataReducer in index.js importiert */
 export default commentDataSlice.reducer
 

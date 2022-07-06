@@ -54,7 +54,7 @@ export default  function Article(props) {
         }
         return initArray
     }, []) 
-    /* articleBodyEl ist ein Array und jedes beinhaltet JSX zu einem articleBodyPart */
+    /* articleBodyEl ist ein Array und jedes Element beinhaltet JSX zu einem articleBodyPart */
     const articleBodyEl = articleFiltered.map((articleBodyPart, index) => <ArticleBodyPart key = {index} {...articleBodyPart}/>)
 
     /* Nur wenn IS_THERE_KNOWLEDGE true ist wird KnowledgeBodyHeight geupdated und ein Event-Listener "rezise" auf Window gesetzt sowie die Cleanup-Funktion von useEffekt returned und außerdem getKnowledgeBox gecalled*/

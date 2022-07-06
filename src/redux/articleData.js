@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-
 const PROJECT_ID = process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID;
 const DATASET = "production";
 const QUERY = encodeURIComponent('*[_type == "data"] | order(_createdAt desc)');
@@ -75,8 +74,6 @@ export const selectisArticleDataLoadingFailed = (state) => state.articleData.isA
 export const {addArticleId} = articleDataSlice.actions
 export const {setCurrentRead} = articleDataSlice.actions
 export const {toggleIsReadBoxShown} = articleDataSlice.actions
-
-
 
 /* wird als articleDataReducer in index.js importiert */
 export default articleDataSlice.reducer
