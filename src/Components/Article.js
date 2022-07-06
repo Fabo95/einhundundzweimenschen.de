@@ -9,6 +9,8 @@ import {selectArticles} from "../redux/articleData"
 import {selectReadArticleIds} from "../redux/articleData"
 
 import {selectComments} from "../redux/commentData"
+import {selectIsCommentDataPosting} from "../redux/commentData"
+
 
 import {addArticleId} from "../redux/articleData"
 import {setCurrentRead} from "../redux/articleData"
@@ -18,6 +20,7 @@ import ArticleBodyPart from './ArticleBodyPart';
 import Comment from './Comment';
 import Form from './Form';
 import CommonButton from '../Common/CommonButton';
+import CommonDotWave from '../Common/CommonDotWave';
 
 export default  function Article(props) {
 
@@ -28,6 +31,7 @@ export default  function Article(props) {
     const readArticleIds = useSelector(selectReadArticleIds)
 
     const comments = useSelector(selectComments)
+    const isCommentDataPosting = useSelector(selectIsCommentDataPosting)
 
     const [newData, setNewData] = useState(false)
     const [isKnowledgeBodyShown, setIsKnowledgeBodyShown] = useState(false)
@@ -166,7 +170,11 @@ export default  function Article(props) {
                 <Form 
                     _id = {articleId} 
                     toggleNewData={toggleNewData}
-                    />
+                />
+                {isCommentDataPosting && 
+                <div className='comment comment--loading'>
+                    <CommonDotWave size = {40} />
+                </div>}
                 {commentsByArticleEl}
                 <CommonButton  
                     sx={{marginTop: "1.5em"}} 

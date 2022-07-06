@@ -1,7 +1,5 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import { DotWave } from '@uiball/loaders'
-
 import {useSelector} from "react-redux"
 
 import {selectIsArticleDataLoading} from "./redux/articleData"
@@ -17,6 +15,7 @@ import Article from './Components/Article';
 import Footer from "./Components/Footer"
 import Impressum from './Components/Impressum';
 import Datenschutz from './Components/Datenschutz';
+import CommonDotWave from './Common/CommonDotWave';
 import geist from "./images/geist4.png"
 
 export default function App () {
@@ -26,21 +25,11 @@ export default function App () {
     const isCommentDataLoading = useSelector(selectIsCommentDataLoading)
     const isCommentDataLoadingFailed = useSelector(selectisCommentDataLoadingFailed)
 
-    const [isLoading, setIsLoading] = React.useState(true)
-
-    React.useEffect(() => {
-            function handleIsLoading() {
-                setIsLoading(false)
-            }
-            setTimeout(handleIsLoading, 1000)
-        }, [])
-
-
     function promiseBasedJSX () {
-        if (isArticleDataLoading || isCommentDataLoading)  {
-            return (<div className='loading'><DotWave size={70} speed={1} color="#D9534F" /></div> )
+        if (isArticleDataLoading )  {
+            return (<div className='loading'><CommonDotWave size = {70} /></div> )
         }
-        else if (isArticleDataLoadingFailed || isCommentDataLoadingFailed) {
+        else if (isArticleDataLoadingFailed) {
             return (
             <div className='loading'>
                 <div>

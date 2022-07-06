@@ -853,11 +853,16 @@ h3 {
 /* Comment */
 
 .comment {
-  padding-bottom: 1em;
   margin-bottom: 1em;
   padding: 1em;
   border-radius: 10px;
   background: rgba(34,34,34,0.05);
+}
+
+.comment--loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 

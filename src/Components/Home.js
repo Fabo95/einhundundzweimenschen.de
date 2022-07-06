@@ -9,6 +9,7 @@ import {selectArticles} from "../redux/articleData"
 import {selectCurrentRead} from "../redux/articleData"
 import {selectIsReadBoxShown} from "../redux/articleData"
 
+import {setIsCommentDataPostingFailed} from "../redux/commentData"
 
 import Swiper from "./Swiper"
 import Preview from './Preview'
@@ -47,6 +48,10 @@ export default function Home (props) {
     else if (location.state ) {
         ref.current.scrollIntoView()
         }
+
+    /* UX Gründe, falls zuvor im Artikel angezeigt rejected Nachricht angezeigt wurde */
+    dispatch(setIsCommentDataPostingFailed(false))
+    
     },[location])
 
     return (
