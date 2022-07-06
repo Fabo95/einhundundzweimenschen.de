@@ -1,31 +1,44 @@
-import React, {useRef} from 'react'
+import React, {useState, useRef} from 'react'
 import {useParams} from "react-router-dom"
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
-import {ArticleContext} from "../context/ArticleContext"
+import {useSelector, useDispatch} from "react-redux"
+
+import {selectArticles} from "../redux/articleData"
+import {selectReadArticleIds} from "../redux/articleData"
+
+import {selectComments} from "../redux/commentData"
+import {selectIsCommentDataPosting} from "../redux/commentData"
+
+
+import {addArticleId} from "../redux/articleData"
+import {setCurrentRead} from "../redux/articleData"
+import {toggleIsReadBoxShown} from "../redux/articleData"
+
 import ArticleBodyPart from './ArticleBodyPart';
 import Comment from './Comment';
 import Form from './Form';
 import CommonButton from '../Common/CommonButton';
-
-
+import CommonDotWave from '../Common/CommonDotWave';
 
 export default  function Article(props) {
 
-    const {dataArr, handleRead} = React.useContext(ArticleContext)
-    
-
-    const [commentArr, setCommentArr] = React.useState([{name: "", text: "", _updatedAt: ""}])
-    const [newData, setNewData] = React.useState(false)
-
-    const [isKnowledgeBodyShown, setIsKnowledgeBodyShown] = React.useState(false)
-    const [knowledgeBodyHeight, setKnowledgeBodyHeight] = React.useState(0)
-
+    const dispatch = useDispatch()
     const {articleIndex} = useParams()
-    const article = dataArr[articleIndex]
-    const articleId = article._id
+
+    const articles = useSelector(selectArticles)
+    const readArticleIds = useSelector(selectReadArticleIds)
+
+    const comments = useSelector(selectComments)
+    const isCommentDataPosting = useSelector(selectIsCommentDataPosting)
+
+    const [newData, setNewData] = useState(false)
+    const [isKnowledgeBodyShown, setIsKnowledgeBodyShown] = useState(false)
+    const [knowledgeBodyHeight, setKnowledgeBodyHeight] = useState(0)
+
+    const article = articles[articleIndex]
+    const articleId = article._id 
 
     /* collator ist eine Funktion mit der ein Natural sort im Argument von sort(HIER) durchgeführt wird -> Elemente werden natürlich sortiert */
     let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
@@ -40,8 +53,8 @@ export default  function Article(props) {
             initArray.push({[property]: article[property], [`titel${absatzNum}`]: article[`titel${absatzNum}`]})
         }
         return initArray
-    }, [])
-    /* articleBodyEl ist ein Array und jedes beinhaltet JSX zu einem articleBodyPart */
+    }, []) 
+    /* articleBodyEl ist ein Array und jedes Element beinhaltet JSX zu einem articleBodyPart */
     const articleBodyEl = articleFiltered.map((articleBodyPart, index) => <ArticleBodyPart key = {index} {...articleBodyPart}/>)
 
     /* Nur wenn IS_THERE_KNOWLEDGE true ist wird KnowledgeBodyHeight geupdated und ein Event-Listener "rezise" auf Window gesetzt sowie die Cleanup-Funktion von useEffekt returned und außerdem getKnowledgeBox gecalled*/
@@ -52,6 +65,32 @@ export default  function Article(props) {
     /* knowledgeBoxStyle ist das Accordion-Item */
     const knowledgeBodyClass = isKnowledgeBodyShown ? "showKnowledgeBody" : "" 
     const knowledgeIconClass = isKnowledgeBodyShown ? "rotateIconMinus": "rotateIconPlus"
+
+    /* comments ist ein Objekt, mit den articleIds als properties und arrays als property-values -> jedes Array beinhaltet Comments für eine articleId also einen Aricle; HINT: Zugriff mit [articleId], weil articleIds Nummern sind. 
+    Somit ist commentsByArticle  ein Array, in dem jedes Element ein Comment für diesen Article ist*/
+    const commentsByArticle = comments[articleId] ? comments[articleId] : []
+
+    const commentsByArticleEl = commentsByArticle.map((comment, index) => {
+        return <Comment key={index} name={comment.name} text={comment.text} date={comment._updatedAt} />
+    })
+
+    function handleReadArticle() {
+        dispatch(setCurrentRead(article))
+       if(!readArticleIds.includes(articleId)) {
+        dispatch(addArticleId(articleId))
+        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 400) 
+        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 6000) 
+        localStorage.setItem("readArticleIds", JSON.stringify([...readArticleIds, articleId]))
+       }
+    }
+
+    function toggleIsKnowledgeBodyShown () {
+        setIsKnowledgeBodyShown(prevIsKnowledgeBodyShown => !prevIsKnowledgeBodyShown)
+    }
+
+    function toggleNewData () {
+        setNewData(prevNewData => !prevNewData)
+    }
 
     function getKnowledgeBox() {
         return (
@@ -77,10 +116,6 @@ export default  function Article(props) {
         )
     }
 
-    const commentEl = commentArr.map((comment, index) => {
-        return <Comment key={index} name={comment.name} text={comment.text} date={comment._updatedAt} />
-    })
-
     let isMounting  = useRef(true)
 
     React.useEffect(() => {
@@ -102,41 +137,13 @@ export default  function Article(props) {
         function handleRezise() {
             setKnowledgeBodyHeight(refKnowledgeBody.current.scrollHeight + 2) }
 
-        let PROJECT_ID = process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID;
-        let DATASET = "production";
-          /* Erläuterung QUERY: ich möchte Daten vom _type comment haben UND davon nur diese, die auf die _id des Artikels verweisen der gerade angezeigt wird*/  
-          /* Als _type wird comment angegeben, weil das der Name (der im Schema definiert ist) des Dokuments ist von dem ich Daten haben will */
-          /* Dokument ist ein Schema für eine Ansammlung von Daten -> bspw. data Dokument ist das Dokument in dem Artikel sind*/   
-        let QUERY = encodeURIComponent(`*[_type == "comment" && data._ref ==${JSON.stringify(articleId)}] | order(_updatedAt desc) {_updatedAt, name, text}`);
-
-        let URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${DATASET}?query=${QUERY}`;
-  
-          async function getApiData () {
-            let response = await fetch(URL) 
-            let data = await response.json() 
-            return data }
-
-            getApiData().then(data => {
-                setCommentArr(data.result)
-            })
-
              /* Clean-up Funktion die EventListener für knowledgeBoxHeight, bei Unmounting und erneuter Ausführung von Effekt-Funktion removed */
             return (
                 IS_THERE_KNOWLEDGE && function () { 
                     window.removeEventListener("resize", handleRezise)} 
+                    
                 )
-                
-            
         }, [newData])
-
-
-        function handleNewData () {
-            setNewData(prevNewData => !prevNewData)
-        }
-
-        function toggleIsKnowledgeBodyShown () {
-            setIsKnowledgeBodyShown(previsKnowledgeBodyShown => !previsKnowledgeBodyShown) 
-        }
 
     return (    
         <div className='article container'>
@@ -162,16 +169,20 @@ export default  function Article(props) {
                 <h2 className='h2--article h2--article--comment'>Schreibe einen Kommentar</h2>
                 <Form 
                     _id = {articleId} 
-                    handleNewData={handleNewData}
-                    />
-                {commentEl}
+                    toggleNewData={toggleNewData}
+                />
+                {isCommentDataPosting && 
+                <div className='comment comment--loading'>
+                    <CommonDotWave size = {40} />
+                </div>}
+                {commentsByArticleEl}
                 <CommonButton  
                     sx={{marginTop: "1.5em"}} 
                     to={`/`} 
                     delay={200} 
                     variant="outlined" 
                     state={articleIndex}   
-                    handleRead={() => handleRead(articleId)}
+                    handleRead={handleReadArticle}
                     >
                     Bring mich zurück!
                 </CommonButton>

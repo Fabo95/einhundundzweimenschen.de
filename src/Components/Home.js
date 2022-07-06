@@ -1,27 +1,34 @@
-import React, {useRef} from 'react'
-import {ArticleContext} from "../context/ArticleContext"
+import React, {useRef, useEffect} from 'react'
 import {useLocation} from 'react-router-dom';
-
-import Swiper from "./Swiper"
-import Preview from './Preview';
-
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowTurnDown } from '@fortawesome/free-solid-svg-icons';
 
+import {useSelector, useDispatch} from "react-redux"
+
+import {selectArticles} from "../redux/articleData"
+import {selectCurrentRead} from "../redux/articleData"
+import {selectIsReadBoxShown} from "../redux/articleData"
+
+import {setIsCommentDataPostingFailed} from "../redux/commentData"
+
+import Swiper from "./Swiper"
+import Preview from './Preview'
+
 export default function Home (props) {
 
-    const {dataArr, readArr, isReadBoxShown} = React.useContext(ArticleContext)
-    
-    const [readArticle, setReadArticle] = React.useState({titel: null})
+    const dispatch = useDispatch()
 
+    const articles = useSelector(selectArticles)
+
+    const currentRead = useSelector(selectCurrentRead)
+    const isReadBoxShown = useSelector(selectIsReadBoxShown)
     const readBoxClass = isReadBoxShown ? "showReadBox" : ""
 
     const location = useLocation()
     const ref = useRef(null)
 
-        let dataElementsArr = dataArr.map((article, index) => {
-            return (
+    const articleEl = articles.map((article, index) => {
+        return (
             <Preview 
                 key = {index}
                 index = {index}
@@ -30,21 +37,22 @@ export default function Home (props) {
                 thema= {article.thema}
                 titel= {article.titel}
                 imgLokal= {article.imgLokal}
-                readArr = {readArr}
             />)
         }
-        )
+    )
 
     React.useEffect(() => {
     if (!location.state) {
             window.scrollTo(0, 0)
     }
-    else if (location.state) {
-        setReadArticle(dataArr[location.state])
+    else if (location.state ) {
         ref.current.scrollIntoView()
         }
-    },[location])
 
+    /* UX Gründe, falls zuvor im Artikel angezeigt rejected Nachricht angezeigt wurde */
+    dispatch(setIsCommentDataPostingFailed(false))
+    
+    },[location])
 
     return (
         <div>
@@ -71,12 +79,12 @@ export default function Home (props) {
                     Zeug zum lesen - ohne Superlative und Verschnörkelung.
                 </h2>
                 <div className={`${readBoxClass}`}>
-                    {readArticle.titel && 
+                    {currentRead.titel && 
                     <div className='read--box'>
-                        <p className='read--message'>"{readArticle.titel}" <br />wurde als gelesen markiert.</p>
+                        <p className='read--message'>"{currentRead.titel}" <br />wurde als gelesen markiert.</p>
                     </div>}
                 </div>
-                {dataElementsArr}
+                {articleEl}
             </section>
         </div>
     )   

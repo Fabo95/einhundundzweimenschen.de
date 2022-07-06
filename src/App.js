@@ -1,7 +1,9 @@
 import React from 'react'
-
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import { DotWave } from '@uiball/loaders'
+import {useSelector} from "react-redux"
+
+import {selectIsArticleDataLoading} from "./redux/articleData"
+import {selectisArticleDataLoadingFailed} from "./redux/articleData"
 
 import Navbar from './Components/Navbar'
 import Aside from "./Components/Aside"
@@ -10,23 +12,29 @@ import Article from './Components/Article';
 import Footer from "./Components/Footer"
 import Impressum from './Components/Impressum';
 import Datenschutz from './Components/Datenschutz';
+import CommonDotWave from './Common/CommonDotWave';
+import geist from "./images/geist4.png"
 
 export default function App () {
+    const isArticleDataLoading = useSelector(selectIsArticleDataLoading)
+    const isArticleDataLoadingFailed = useSelector(selectisArticleDataLoadingFailed)
 
-    const [loading, setLoading] = React.useState(true)
-
-    React.useEffect(() => {
-            function handleLoading() {
-                setLoading(false)
-            }
-            setTimeout(handleLoading, 1000)
-        }, [])
-
-    return (
-        loading ?
-        <div className='loading'>
-           <DotWave size={70} speed={1} color="#D9534F" />
-        </div>:
+    function promiseBasedJSX () {
+        if (isArticleDataLoading )  {
+            return (<div className='loading'><CommonDotWave size = {70} /></div> )
+        }
+        else if (isArticleDataLoadingFailed) {
+            return (
+            <div className='loading'>
+                <div>
+                    <img className='promise--rejected--geist' src={geist} alt="Ein verärgerter Geist"></img>
+                    <p className=''>Da lief etwas schief...</p>
+                </div>
+            </div>)
+        }
+        
+        else {
+        return (
         <Router>
             <div className='app'>
                 <Navbar />
@@ -46,6 +54,12 @@ export default function App () {
                 <Footer />
             </div>
         </Router>
+        )
+        }}
+
+    return (
+        promiseBasedJSX()
     )
 }
+
 

@@ -2,12 +2,24 @@ import React, {useState} from 'react';
 import { useForm } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 
+import {useSelector, useDispatch} from 'react-redux';
+
+import {postCommentByArticle} from "../redux/commentData"
+import {selectIsCommentDataPostingFailed} from "../redux/commentData"
+
+import {setIsCommentDataPostingFailed} from "../redux/commentData"
+
 import CommonButton from '../Common/CommonButton';
 
 export default function Form(props) {
 
+  console.log("RANNNNNN")
+
+  const dispatch = useDispatch()
+
+  const isCommentDataPostingFailed = useSelector(selectIsCommentDataPostingFailed)
+
   const [isSubmitShown, setIsSubmitShown] = useState(false)
-  const [rejectedMsg, setRejectedMsg] = useState(null)
   const submitClass = isSubmitShown? "showSubmit" : "hideSubmit"
 
   const {
@@ -19,45 +31,47 @@ export default function Form(props) {
 
   /* Funktion die bei Submit des Forms ausgeführt wird */
   function onSubmit (data, e) {
-  e.preventDefault()
-  const mutations = [{
-    create: {
-      _type: 'comment',
-      data: {
-        _type: 'reference',
-        _ref: props._id,
-      },
-      name: data.name,
-      text: data.text
-    }
-  }]
+    e.preventDefault()
 
-    fetch(`https://${process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2021-06-07/data/mutate/production`, {
+    const mutations = [{
+      create: {
+        _type: 'comment',
+        data: {
+          _type: 'reference',
+          _ref: props._id,
+        },
+        name: data.name,
+        text: data.text,
+        id: props._id
+      }
+    }]
+
+    const requestOptions = {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
         Authorization: `Bearer ${process.env.REACT_APP_SANITY_API_TOKEN}`
       },
       body: JSON.stringify({mutations})
-    })
-      .then(response => response.json())
-      .then(result => {
-        reset()
-        setIsSubmitShown(false)
-        props.handleNewData()
-        })
-      .catch(error => {
-        setRejectedMsg("Das hat leider nicht funktioniert...")})
-    };
+    }
 
+    dispatch(postCommentByArticle({comment: {
+      name: data.name,
+      text: data.text,
+      id: props._id},
+      requestOptions: requestOptions,
+      resetForm: reset,
+    }))
+    };
+  
   function handleIsSubmitShown () {
     setIsSubmitShown(true)
   }
 
   function handleCancelSubmit () {
     setIsSubmitShown(false)
-    setRejectedMsg(null)
-    reset()
+    reset() 
+    dispatch(setIsCommentDataPostingFailed(false))
   }
 
   return (
@@ -72,7 +86,7 @@ export default function Form(props) {
       </div>
       <div className='input--box--submit'>
         <div className='input--box'>
-          {rejectedMsg && <p className='input--error'>{rejectedMsg}</p>}
+          {isCommentDataPostingFailed && <p className='input--error'>Da lief etwas schief...</p>}
           <CommonButton  
                       className={submitClass}
                       delay={200} 

@@ -131,7 +131,9 @@ section {
   align-items: center;
 }
 
-
+.promise--rejected--geist {
+  width: 60px;
+}
 /* FOOTER */
 
 .footer {
@@ -851,16 +853,18 @@ h3 {
 /* Comment */
 
 .comment {
-  padding-bottom: 1em;
   margin-bottom: 1em;
   padding: 1em;
   border-radius: 10px;
   background: rgba(34,34,34,0.05);
 }
 
-.comment:nth-of-type(1){
-  margin-top: 3em;
+.comment--loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 
 .comment--flex {
   display: flex;
@@ -904,6 +908,9 @@ h3 {
     right: 15%;
   }
 
+  .promise--rejected--geist {
+    width: 50px;
+  } 
 
 
 }
