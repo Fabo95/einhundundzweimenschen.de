@@ -53,10 +53,7 @@ export default function Form(props) {
       body: JSON.stringify({mutations})
     }
 
-    dispatch(postCommentByArticle({comment: {
-      name: data.name,
-      text: data.text,
-      id: props._id},
+    dispatch(postCommentByArticle({
       requestOptions: requestOptions,
       resetForm: reset,
     }))

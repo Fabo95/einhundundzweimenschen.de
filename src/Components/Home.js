@@ -27,7 +27,7 @@ export default function Home (props) {
     const location = useLocation()
     const ref = useRef(null)
 
-    const articleEl = articles.map((article, index) => {
+    const previewEl = articles.map((article, index) => {
         return (
             <Preview 
                 key = {index}
@@ -60,7 +60,7 @@ export default function Home (props) {
                 <div className='container'>
                     <h1 className='h1--home'>Drei Köpfe, zwei Spezien <FontAwesomeIcon className='turn__down__icon' icon={faArrowTurnDown} /></h1>
                     <p className="subhead">
-                        Wir sind Fabian, Kerstin und Matze, ein Dreiergespann aus Bonn und zwischen 2 und 27 Jahre alt. Aufgebrochen vor erstaunlich langer Zeit und irgendwie immer noch unterwegs. Durchgelaufen durch sämtliche Supermärkte Europas, immer auf der Suche nach dem günstigsten Campinggas, haben wir erfahren, dass es auch in Spanien einen bitterkalten Winter gibt. Jetzt sind wir seit Monaten in Italien, haben erst einmal Pizza gegessen und wollen euch unsere Geschichten erzählen.
+                        Wir sind Fabian, Kerstin und Matze, ein Dreiergespann aus Bonn, zwischen 2 und 27 Jahre alt. Im ausgebauten Van haben wir sämtliche Supermärkte Europas durchkämmt, stets auf der Suche nach dem günstigsten Campinggas und schließlich festgestellt, dass es auch in Spanien einen bitterkalten Winter gibt. Irgendwie sind wir immer noch unterwegs, haben Unmengen erlebt, erfahren und gelernt. Habt ihr Lust auf ein paar Geschichten?
                     </p>
                 </div>
             </main>
@@ -73,6 +73,12 @@ export default function Home (props) {
                 </div>
                 <Swiper/>
             </section>
+            <section>
+                <div className='container h2'>
+                    <h2 className='h2--home h2--home--about'>Warum findet ihr uns hier?</h2>
+                    <p className='p--teaser'>Ihr findet uns hier aus ein paar einfachen Gründen. Wir wollen uns selbst ausprobieren und das, was wir können, miteinander verschmelzen lassen. Wir haben Freude daran, uns mit der Herausforderung auseinanderzusetzen, einen gemeinsamen authentischen Stil zu finden. Wir probieren herum und laden euch ein, diese Symbiose wachsen zu sehen. Einer baut das Gerüst, eine füllt die Räume. Wir basteln Stück für Stück, für uns, für euch, für jeden, der Spaß an wirrem, ehrlichen und freien Content hat.</p>
+                </div>
+            </section>
             <section className='container'>
                 <div ref={ref} id="onlyForScroll"></div> 
                 <h2 className='h2--home h2--home--preview'>
@@ -84,7 +90,7 @@ export default function Home (props) {
                         <p className='read--message'>"{currentRead.titel}" <br />wurde als gelesen markiert.</p>
                     </div>}
                 </div>
-                {articleEl}
+                {previewEl}
             </section>
         </div>
     )   

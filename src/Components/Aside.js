@@ -5,13 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
+import CommonIcon from '../Common/CommonIcon';
+
 import fabian from "../images/fabian.jpeg"
 import kerstin from "../images/kerstin.jpeg"
 import matze from "../images/matze.jpeg"
 
 export default function Aside () {
 
-    const [personCarr, isAsideShown, toRight, toLeft, toggleIsAsideShown, getIcon] = useAside()
+    const [personCarr, isAsideShown, toRight, toLeft, toggleIsAsideShown] = useAside()
 
     const asideClass = isAsideShown ? "showAside" : ""
 
@@ -19,7 +21,7 @@ export default function Aside () {
         <aside className={`aside ${asideClass}`}>
             <div className='aside--flex'>
                 <FontAwesomeIcon className="icon__arrow" icon={faChevronLeft} onClick={toLeft}/>
-                <img className='img__author' src={personCarr===0?fabian:personCarr===1?kerstin:matze} alt="Ein charmanter Kerl / eine charmante Lady / Ein wilder Hund"></img>
+                <img className='img--author' src={personCarr===0?fabian:personCarr===1?kerstin:matze} alt="Ein charmanter Kerl / eine charmante Lady / Ein wilder Hund"></img>
                 <FontAwesomeIcon className="icon__arrow" icon={faChevronRight} onClick={toRight} />
             </div>
             <div className='aside--toggle--box'> 
@@ -43,7 +45,7 @@ export default function Aside () {
             <span className='bold'>Merkmal:</span>{personCarr===0?" Digitaler Kopf der Bande":personCarr===1?" Die kreative Texterin":" Hat mal einen Stein verschluckt"} 
             </p>
             <div className='icon__author'>
-                {getIcon()}
+                <CommonIcon personCarr = {personCarr} />
             </div>
         </aside>
     )

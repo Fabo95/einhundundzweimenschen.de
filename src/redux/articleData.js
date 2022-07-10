@@ -1,11 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const PROJECT_ID = process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID;
-const DATASET = "production";
-const QUERY = encodeURIComponent('*[_type == "data"] | order(_createdAt desc)');
-const URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${DATASET}?query=${QUERY}`;
-
 export const loadAllArticles = createAsyncThunk("articleData/loadAllArticles", async(arg, thunkAPI) => {
+    const PROJECT_ID = process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID;
+    const DATASET = "production";
+    const QUERY = encodeURIComponent('*[_type == "data"] | order(_createdAt desc)');
+    const URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${DATASET}?query=${QUERY}`;
     const response = await fetch(URL)
     const data = await response.json()
     return data.result
@@ -61,7 +60,6 @@ const articleDataSlice = createSlice({
     }
 })
 
-export const selectStatus = (state) => state.articleData.statusGet
 export const selectArticles = (state) => state.articleData.articles
 
 export const selectReadArticleIds = (state) => state.articleData.readArticleIds

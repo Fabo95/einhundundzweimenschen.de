@@ -11,11 +11,11 @@ import {selectReadArticleIds} from "../redux/articleData"
 import {selectComments} from "../redux/commentData"
 import {selectIsCommentDataPosting} from "../redux/commentData"
 
-
 import {addArticleId} from "../redux/articleData"
 import {setCurrentRead} from "../redux/articleData"
 import {toggleIsReadBoxShown} from "../redux/articleData"
 
+import ArticleHeader from './ArticleHeader';
 import ArticleBodyPart from './ArticleBodyPart';
 import Comment from './Comment';
 import Form from './Form';
@@ -96,7 +96,7 @@ export default  function Article(props) {
         return (
             <>
                 <div className='article--knowledge'>
-                    <h3 className='text--title--know'>
+                    <h3 className='text--title--know' onClick={toggleIsKnowledgeBodyShown} >
                         Wissenswertes {article.wtitel}
                     </h3>
                     {isKnowledgeBodyShown ?
@@ -147,25 +147,13 @@ export default  function Article(props) {
 
     return (    
         <div className='article container'>
-            <h2 className='h1--article'>{article.thema}: {article.titel}</h2>
-            <div className='article--grid'>
-                <p className='article__meta'>
-                    <span className='bold'> Autor: </span> 
-                    {article.author}
-                </p>
-                <p className='article__meta'>
-                    <span className='bold'> Lesedauer: </span> 
-                    {article.lesedauer}
-                </p>
-                <p className='article__meta'>
-                    <span className='bold'> Datum: </span> 
-                    {article.datum}
-                </p>
-            </div>
-            <img className='article__img' src={`../images/${article.imgLokal}`} alt="Dein Lieblingsautor"></img>
+            <ArticleHeader article = {article}/>
             <div className='article--body'>
                 {articleBodyEl}
                 {IS_THERE_KNOWLEDGE && getKnowledgeBox()}
+
+            </div>
+            <div className='comment--body'>
                 <h2 className='h2--article h2--article--comment'>Schreibe einen Kommentar</h2>
                 <Form 
                     _id = {articleId} 
