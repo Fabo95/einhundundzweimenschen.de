@@ -12,10 +12,10 @@ import { commonButtonTheme } from "./theme/commonButtonTheme";
 import './styles.css';
 
 const render = () => {
+    console.log("index ran")
 
     store.dispatch(loadAllArticles())
     store.dispatch(loadAllComments())
-    store.subscribe(() => console.log(store.getState()))
 
     const container = document.getElementById('root');
     const root = createRoot(container); // createRoot(container!) if you use TypeScript

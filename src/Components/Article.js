@@ -6,14 +6,13 @@ import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import {useSelector, useDispatch} from "react-redux"
 
 import {selectArticles} from "../redux/articleData"
-import {selectReadArticleIds} from "../redux/articleData"
+import {selectCurrentRead} from "../redux/articleData"
+
+import {setCurrentRead} from "../redux/articleData"
+import {setCurrentArticleIndex} from "../redux/articleData"
 
 import {selectComments} from "../redux/commentData"
 import {selectIsCommentDataPosting} from "../redux/commentData"
-
-import {addArticleId} from "../redux/articleData"
-import {setCurrentRead} from "../redux/articleData"
-import {toggleIsReadBoxShown} from "../redux/articleData"
 
 import ArticleHeader from './ArticleHeader';
 import ArticleBodyPart from './ArticleBodyPart';
@@ -21,14 +20,16 @@ import Comment from './Comment';
 import Form from './Form';
 import CommonButton from '../Common/CommonButton';
 import CommonDotWave from '../Common/CommonDotWave';
+import useIsInViewport from '../hooks/useIsInViewport';
 
 export default  function Article(props) {
 
     const dispatch = useDispatch()
+
     const {articleIndex} = useParams()
 
     const articles = useSelector(selectArticles)
-    const readArticleIds = useSelector(selectReadArticleIds)
+    const currentRead = useSelector(selectCurrentRead)
 
     const comments = useSelector(selectComments)
     const isCommentDataPosting = useSelector(selectIsCommentDataPosting)
@@ -36,9 +37,13 @@ export default  function Article(props) {
     const [newData, setNewData] = useState(false)
     const [isKnowledgeBodyShown, setIsKnowledgeBodyShown] = useState(false)
     const [knowledgeBodyHeight, setKnowledgeBodyHeight] = useState(0)
+    let isMounting  = useRef(true)
+    let commentRef = useRef(null)
 
     const article = articles[articleIndex]
     const articleId = article._id 
+
+    const isCommentInViewport = useIsInViewport(commentRef);
 
     /* collator ist eine Funktion mit der ein Natural sort im Argument von sort(HIER) durchgeführt wird -> Elemente werden natürlich sortiert */
     let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
@@ -74,16 +79,6 @@ export default  function Article(props) {
         return <Comment key={index} name={comment.name} text={comment.text} date={comment._updatedAt} />
     })
 
-    function handleReadArticle() {
-        dispatch(setCurrentRead(article))
-       if(!readArticleIds.includes(articleId)) {
-        dispatch(addArticleId(articleId))
-        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 400) 
-        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 6000) 
-        localStorage.setItem("readArticleIds", JSON.stringify([...readArticleIds, articleId]))
-       }
-    }
-
     function toggleIsKnowledgeBodyShown () {
         setIsKnowledgeBodyShown(prevIsKnowledgeBodyShown => !prevIsKnowledgeBodyShown)
     }
@@ -116,14 +111,14 @@ export default  function Article(props) {
         )
     }
 
-    let isMounting  = useRef(true)
-
     React.useEffect(() => {
 
         if (isMounting.current) {
             window.scrollTo(0, 0)  
         }
         isMounting.current = false
+
+        dispatch(setCurrentArticleIndex(articleIndex))
 
         if(IS_THERE_KNOWLEDGE) {
             /* knowledgeBoxHeight für knowledgeBoxStyle identifizieren */
@@ -145,6 +140,12 @@ export default  function Article(props) {
                 )
         }, [newData])
 
+    React.useEffect(() => {
+        if (isCommentInViewport && currentRead._id !== article._id) {
+            dispatch(setCurrentRead(article))
+        }
+    }, [isCommentInViewport])
+
     return (    
         <div className='article container'>
             <ArticleHeader article = {article}/>
@@ -153,7 +154,7 @@ export default  function Article(props) {
                 {IS_THERE_KNOWLEDGE && getKnowledgeBox()}
 
             </div>
-            <div className='comment--body'>
+            <div ref={commentRef} className='comment--body'>
                 <h2 className='h2--article h2--article--comment'>Schreibe einen Kommentar</h2>
                 <Form 
                     _id = {articleId} 
@@ -164,16 +165,6 @@ export default  function Article(props) {
                     <CommonDotWave size = {40} />
                 </div>}
                 {commentsByArticleEl}
-                <CommonButton  
-                    sx={{marginTop: "1.5em"}} 
-                    to={`/`} 
-                    delay={200} 
-                    variant="outlined" 
-                    state={articleIndex}   
-                    handleRead={handleReadArticle}
-                    >
-                    Bring mich zurück!
-                </CommonButton>
             </div>
         </div>
 

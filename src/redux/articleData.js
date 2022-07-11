@@ -24,6 +24,7 @@ const articleDataSlice = createSlice({
         JSON.parse(localStorage.getItem("readArticleIds")):
         [],
         currentRead: {},
+        currentArticleIndex: "",
         isReadBoxShown: false,
         isArticleDataLoading: true,
         isArticleDataLoadingFailed: false
@@ -37,6 +38,9 @@ const articleDataSlice = createSlice({
         },
         toggleIsReadBoxShown: (state, action) => {
             state.isReadBoxShown = !state.isReadBoxShown
+        },
+        setCurrentArticleIndex: (state, action) => {
+            state.currentArticleIndex = action.payload
         }
     },
     extraReducers: {
@@ -65,6 +69,7 @@ export const selectArticles = (state) => state.articleData.articles
 export const selectReadArticleIds = (state) => state.articleData.readArticleIds
 export const selectCurrentRead = (state) => state.articleData.currentRead
 export const selectIsReadBoxShown = (state) => state.articleData.isReadBoxShown
+export const selectCurrentArticleIndex = (state) => state.articleData.currentArticleIndex
 
 export const selectIsArticleDataLoading = (state) => state.articleData.isArticleDataLoading
 export const selectisArticleDataLoadingFailed = (state) => state.articleData.isArticleDataLoadingFailed
@@ -72,6 +77,7 @@ export const selectisArticleDataLoadingFailed = (state) => state.articleData.isA
 export const {addArticleId} = articleDataSlice.actions
 export const {setCurrentRead} = articleDataSlice.actions
 export const {toggleIsReadBoxShown} = articleDataSlice.actions
+export const {setCurrentArticleIndex} = articleDataSlice.actions
 
 /* wird als articleDataReducer in index.js importiert */
 export default articleDataSlice.reducer

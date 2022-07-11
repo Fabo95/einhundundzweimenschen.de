@@ -8,6 +8,10 @@ import {useSelector, useDispatch} from "react-redux"
 import {selectArticles} from "../redux/articleData"
 import {selectCurrentRead} from "../redux/articleData"
 import {selectIsReadBoxShown} from "../redux/articleData"
+import {selectReadArticleIds} from "../redux/articleData"
+
+import {addArticleId} from "../redux/articleData"
+import {toggleIsReadBoxShown} from "../redux/articleData"
 
 import {setIsCommentDataPostingFailed} from "../redux/commentData"
 
@@ -19,6 +23,7 @@ export default function Home (props) {
     const dispatch = useDispatch()
 
     const articles = useSelector(selectArticles)
+    const readArticleIds = useSelector(selectReadArticleIds)
 
     const currentRead = useSelector(selectCurrentRead)
     const isReadBoxShown = useSelector(selectIsReadBoxShown)
@@ -26,6 +31,7 @@ export default function Home (props) {
 
     const location = useLocation()
     const ref = useRef(null)
+
 
     const previewEl = articles.map((article, index) => {
         return (
@@ -45,9 +51,16 @@ export default function Home (props) {
     if (!location.state) {
             window.scrollTo(0, 0)
     }
-    else if (location.state ) {
+
+    else if (location.state) {
         ref.current.scrollIntoView()
-        }
+    }
+    if (currentRead._id && !readArticleIds.includes(currentRead._id)) {
+        dispatch(addArticleId(currentRead._id))
+        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 400) 
+        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 6000) 
+        localStorage.setItem("readArticleIds", JSON.stringify([...readArticleIds, currentRead._id]))
+    }
 
     /* UX Gründe, falls zuvor im Artikel angezeigt rejected Nachricht angezeigt wurde */
     dispatch(setIsCommentDataPostingFailed(false))
@@ -74,9 +87,11 @@ export default function Home (props) {
                 <Swiper/>
             </section>
             <section>
-                <div className='container h2'>
-                    <h2 className='h2--home h2--home--about'>Warum findet ihr uns hier?</h2>
-                    <p className='p--teaser'>Ihr findet uns hier aus ein paar einfachen Gründen. Wir wollen uns selbst ausprobieren und das, was wir können, miteinander verschmelzen lassen. Wir haben Freude daran, uns mit der Herausforderung auseinanderzusetzen, einen gemeinsamen authentischen Stil zu finden. Wir probieren herum und laden euch ein, diese Symbiose wachsen zu sehen. Einer baut das Gerüst, eine füllt die Räume. Wir basteln Stück für Stück, für uns, für euch, für jeden, der Spaß an wirrem, ehrlichen und freien Content hat.</p>
+                <div className='container'>
+                    <div className='about--flex'>
+                        <h2 className='h2--home h2--home--about'>Warum findet ihr uns hier?</h2>
+                        <p className='p--teaser'>Ihr findet uns hier aus ein paar einfachen Gründen. Wir wollen uns selbst ausprobieren und das, was wir können, miteinander verschmelzen lassen. Wir haben Freude daran, uns mit der Herausforderung auseinanderzusetzen, einen gemeinsamen authentischen Stil zu finden. Wir probieren herum und laden euch ein, diese Symbiose wachsen zu sehen. Einer baut das Gerüst, eine füllt die Räume. Wir basteln Stück für Stück, für uns, für euch, für jeden, der Spaß an wirrem, ehrlichen und freien Content hat.</p>
+                    </div>
                 </div>
             </section>
             <section className='container'>
@@ -85,10 +100,9 @@ export default function Home (props) {
                     Zeug zum lesen - ohne Superlative und Verschnörkelung.
                 </h2>
                 <div className={`${readBoxClass}`}>
-                    {currentRead.titel && 
                     <div className='read--box'>
                         <p className='read--message'>"{currentRead.titel}" <br />wurde als gelesen markiert.</p>
-                    </div>}
+                    </div>
                 </div>
                 {previewEl}
             </section>
