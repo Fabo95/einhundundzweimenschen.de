@@ -13,6 +13,7 @@ import {selectCurrentViewed} from "../redux/articleData"
 
 import {addReadArticleId} from "../redux/articleData"
 import {addViewedArticleId} from "../redux/articleData"
+import {updateViewedArticleIds} from "../redux/articleData"
 
 import {setIsCommentDataPostingFailed} from "../redux/commentData"
 
@@ -48,6 +49,24 @@ export default function Home (props) {
     let searchedArticles = getSearchedArticles(articles, searchData.search)
 
     const allPreviewEl = searchedArticles.map((article, index) => {
+        return (
+            <Preview 
+                key = {index}
+                index = {index}
+                _id = {article._id}
+                beschreibung= {article.beschreibung}
+                thema= {article.thema}
+                titel= {article.titel}
+                imgLokal= {article.imgLokal}
+            />)
+        }
+    )
+
+    const readArticles = searchedArticles.filter((article, index) => {
+        return readArticleIds.includes(article._id)
+    })
+
+    const readArticleEl = readArticles.map((article, index) => {
         return (
             <Preview 
                 key = {index}
@@ -106,7 +125,10 @@ export default function Home (props) {
         if (searchData.select === "Alle" && searchedArticles[0]) {
             return allPreviewEl
         }
-        else if ((searchData.select === "Angefangen") && viewedArticles[0]) {
+        else if (searchData.select === "Gelesen" && readArticles[0]) {
+            return readArticleEl
+        }
+        else if (searchData.select === "Angefangen" && viewedArticles[0]) {
             return viewedPreviewEl
         }
         else {
@@ -114,7 +136,7 @@ export default function Home (props) {
            <div className='search--failed'>
                 <div>
                     <img className='search--failed--geist' src={geist} alt="Ein verärgerter Geist"></img>
-                    <p className=''>Da gibts nichts...</p>
+                    <p className=''>Da gibt es nichts...</p>
                 </div>
             </div>)
             }
@@ -136,6 +158,12 @@ export default function Home (props) {
         setTimeout(() => {setIsArticleStatusBoxShown(false)}, 6000) 
         setArticleStatusMsg(`"${currentRead.titel}" # wurde als gelesen markiert`)
         localStorage.setItem("readArticleIds", JSON.stringify([...readArticleIds, currentRead._id]))
+        const newViewedArticleIds =  viewedArticleIds.filter(id => {
+            return id !== currentRead._id
+        })
+        dispatch(updateViewedArticleIds(newViewedArticleIds))
+        localStorage.setItem("viewedArticleIds", JSON.stringify(newViewedArticleIds))
+
     }
     else if (currentViewed._id && !viewedArticleIds.includes(currentViewed._id) && !readArticleIds.includes(currentViewed._id)) {
         dispatch(addViewedArticleId(currentViewed._id))

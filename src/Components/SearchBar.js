@@ -13,6 +13,7 @@ export default function SearchBar ({handleFormChange, searchData}) {
 
     const selectDropDownClass = isSelectDropDownShown ? "showSelectDropDown" : ""
 
+
     function handleToggle () {
         setIsSelectDropDownShown(preIsSelectDropDownShown => !preIsSelectDropDownShown)
     }
@@ -24,14 +25,26 @@ export default function SearchBar ({handleFormChange, searchData}) {
                 <option value="allPreview">Alle Artikel</option> 
                 <option value="viewedPreview">Angefangenen Artikel</option> 
             </select> */}
-            <div className='select--input' onClick={handleToggle}>
-                <p>{searchData.select}</p>
-                <FontAwesomeIcon className='select--icon' icon={iconName} />
-                <div className={`select--input--dropdown ${selectDropDownClass}`}>
+            <div className='select--box'>
+                <div className='select--input' onClick={handleToggle}>
+                    <p>{searchData.select}</p>
+                    <FontAwesomeIcon className='select--icon' icon={iconName} />
+                </div>
+                <div className={`select--input--dropdown ${selectDropDownClass}`} >
                     <div className='select--input--dropdown--element'>
-                        <p name="select" className='select--input--dropdown--text' onClick={handleFormChange}>Alle</p>
-                        <p className='select--input--dropdown--text' onClick={handleFormChange}>Gelesen</p>
-                        <p className='select--input--dropdown--text' onClick={handleFormChange}>Angefangen</p>
+                        <p className='select--input--dropdown--text' onClick={(e) => {
+                            handleFormChange(e)
+                            handleToggle()
+                            }}>
+                            Alle</p>
+                        <p className='select--input--dropdown--text' onClick={(e) => {
+                            handleFormChange(e)
+                            handleToggle()
+                            }}>Gelesen</p>
+                        <p className='select--input--dropdown--text' onClick={(e) => {
+                            handleFormChange(e)
+                            handleToggle()
+                            }}>Angefangen</p>
                     </div>
                 </div>
             </div>

@@ -40,6 +40,9 @@ const articleDataSlice = createSlice({
         addViewedArticleId: (state, action) => {
             state.viewedArticleIds.push(action.payload)
         },
+        updateViewedArticleIds: (state, action) => {
+            state.viewedArticleIds = action.payload
+        },
         setCurrentRead: (state, action) => {
             state.currentRead = action.payload
         },
@@ -80,6 +83,7 @@ export const selectisArticleDataLoadingFailed = (state) => state.articleData.isA
 
 export const {addReadArticleId} = articleDataSlice.actions
 export const {addViewedArticleId} = articleDataSlice.actions
+export const {updateViewedArticleIds} = articleDataSlice.actions
 export const {setCurrentRead} = articleDataSlice.actions
 export const {setCurrentViewed} = articleDataSlice.actions
 
