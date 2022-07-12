@@ -32,6 +32,7 @@ export default function Preview (props) {
                 <img src={`../images/${props.imgLokal}`} alt="" className='preview--img'></img>
                 <CommonButton 
                     to={`/article/${props.index}`} 
+                    state = {props._id}
                     delay={200} 
                     variant="outlined"
                     sx={{transform: "translateY(-50%)"}}

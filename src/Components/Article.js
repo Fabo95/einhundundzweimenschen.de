@@ -1,15 +1,14 @@
 import React, {useState, useRef} from 'react'
-import {useParams} from "react-router-dom"
+import {useLocation} from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 import {useSelector, useDispatch} from "react-redux"
 
 import {selectArticles} from "../redux/articleData"
-import {selectCurrentRead} from "../redux/articleData"
 
 import {setCurrentRead} from "../redux/articleData"
-import {setCurrentArticleIndex} from "../redux/articleData"
+import {setCurrentViewed} from "../redux/articleData"
 
 import {selectComments} from "../redux/commentData"
 import {selectIsCommentDataPosting} from "../redux/commentData"
@@ -18,7 +17,6 @@ import ArticleHeader from './ArticleHeader';
 import ArticleBodyPart from './ArticleBodyPart';
 import Comment from './Comment';
 import Form from './Form';
-import CommonButton from '../Common/CommonButton';
 import CommonDotWave from '../Common/CommonDotWave';
 import useIsInViewport from '../hooks/useIsInViewport';
 
@@ -26,10 +24,9 @@ export default  function Article(props) {
 
     const dispatch = useDispatch()
 
-    const {articleIndex} = useParams()
+    const location = useLocation()
 
     const articles = useSelector(selectArticles)
-    const currentRead = useSelector(selectCurrentRead)
 
     const comments = useSelector(selectComments)
     const isCommentDataPosting = useSelector(selectIsCommentDataPosting)
@@ -37,11 +34,15 @@ export default  function Article(props) {
     const [newData, setNewData] = useState(false)
     const [isKnowledgeBodyShown, setIsKnowledgeBodyShown] = useState(false)
     const [knowledgeBodyHeight, setKnowledgeBodyHeight] = useState(0)
+
     let isMounting  = useRef(true)
     let commentRef = useRef(null)
 
-    const article = articles[articleIndex]
-    const articleId = article._id 
+    const articleId = location.state
+
+    const article = articles.find(article => {
+        return article._id === articleId
+    })
 
     const isCommentInViewport = useIsInViewport(commentRef);
 
@@ -118,7 +119,7 @@ export default  function Article(props) {
         }
         isMounting.current = false
 
-        dispatch(setCurrentArticleIndex(articleIndex))
+        dispatch(setCurrentViewed(article))
 
         if(IS_THERE_KNOWLEDGE) {
             /* knowledgeBoxHeight für knowledgeBoxStyle identifizieren */
@@ -141,7 +142,7 @@ export default  function Article(props) {
         }, [newData])
 
     React.useEffect(() => {
-        if (isCommentInViewport && currentRead._id !== article._id) {
+        if (isCommentInViewport) {
             dispatch(setCurrentRead(article))
         }
     }, [isCommentInViewport])

@@ -6,17 +6,22 @@ import { faArrowTurnDown } from '@fortawesome/free-solid-svg-icons';
 import {useSelector, useDispatch} from "react-redux"
 
 import {selectArticles} from "../redux/articleData"
-import {selectCurrentRead} from "../redux/articleData"
-import {selectIsReadBoxShown} from "../redux/articleData"
 import {selectReadArticleIds} from "../redux/articleData"
+import {selectViewedArticleIds} from "../redux/articleData"
+import {selectCurrentRead} from "../redux/articleData"
+import {selectCurrentViewed} from "../redux/articleData"
 
-import {addArticleId} from "../redux/articleData"
-import {toggleIsReadBoxShown} from "../redux/articleData"
+import {addReadArticleId} from "../redux/articleData"
+import {addViewedArticleId} from "../redux/articleData"
 
 import {setIsCommentDataPostingFailed} from "../redux/commentData"
 
 import Swiper from "./Swiper"
 import Preview from './Preview'
+import SearchBar from './SearchBar';
+
+import geist from "../images/geist4.png"
+
 
 export default function Home (props) {
 
@@ -24,16 +29,25 @@ export default function Home (props) {
 
     const articles = useSelector(selectArticles)
     const readArticleIds = useSelector(selectReadArticleIds)
+    const viewedArticleIds = useSelector(selectViewedArticleIds)
 
     const currentRead = useSelector(selectCurrentRead)
-    const isReadBoxShown = useSelector(selectIsReadBoxShown)
-    const readBoxClass = isReadBoxShown ? "showReadBox" : ""
+    const currentViewed = useSelector(selectCurrentViewed)
+
+    const [isArticleStatusBoxShown, setIsArticleStatusBoxShown] = React.useState(false)
+    const [articleStatusMsg, setArticleStatusMsg] = React.useState("")
+    const [searchData, setSearchData] = React.useState({search: "", select: "Alle"}) 
+
+    const articleStatusMsgSplit = articleStatusMsg.split('#')
+    const articleStatusBoxClass = isArticleStatusBoxShown ? "showArticleStatusBox" : ""
 
     const location = useLocation()
     const ref = useRef(null)
 
+    /* Hier wird das articles Array nach search-value gefiltert, sodass alles weitere immer mit dem searchedArticles stattfindet */
+    let searchedArticles = getSearchedArticles(articles, searchData.search)
 
-    const previewEl = articles.map((article, index) => {
+    const allPreviewEl = searchedArticles.map((article, index) => {
         return (
             <Preview 
                 key = {index}
@@ -47,7 +61,67 @@ export default function Home (props) {
         }
     )
 
+    const viewedArticles = searchedArticles.filter((article, index) => {
+        return viewedArticleIds.includes(article._id)
+    })
+
+    const viewedPreviewEl = viewedArticles.map((article, index) => {
+        return (
+            <Preview 
+                key = {index}
+                index = {index}
+                _id = {article._id}
+                beschreibung= {article.beschreibung}
+                thema= {article.thema}
+                titel= {article.titel}
+                imgLokal= {article.imgLokal}
+            />)
+        }
+    )
+
+    console.log(searchData)
+    function handleFormChange (e) {
+        const {name, value, innerText} = e.target
+        setSearchData(prevSearchData => {
+            if (name){
+                return {
+                    ...prevSearchData,
+                    [name]: value
+                }
+            }
+            else {
+                return {
+                    ...prevSearchData,
+                    select: innerText
+                }
+            }
+        })
+    }
+
+    function getSearchedArticles(articles, search) {
+        return articles.filter(article=> article.titel.toLowerCase().includes(search.toLowerCase()));
+    }
+
+    function getPreview () {
+        if (searchData.select === "Alle" && searchedArticles[0]) {
+            return allPreviewEl
+        }
+        else if ((searchData.select === "Angefangen") && viewedArticles[0]) {
+            return viewedPreviewEl
+        }
+        else {
+           return (
+           <div className='search--failed'>
+                <div>
+                    <img className='search--failed--geist' src={geist} alt="Ein verärgerter Geist"></img>
+                    <p className=''>Da gibts nichts...</p>
+                </div>
+            </div>)
+            }
+    }
+
     React.useEffect(() => {
+
     if (!location.state) {
             window.scrollTo(0, 0)
     }
@@ -55,18 +129,26 @@ export default function Home (props) {
     else if (location.state) {
         ref.current.scrollIntoView()
     }
+
     if (currentRead._id && !readArticleIds.includes(currentRead._id)) {
-        dispatch(addArticleId(currentRead._id))
-        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 400) 
-        setTimeout(() => {dispatch(toggleIsReadBoxShown())}, 6000) 
+        dispatch(addReadArticleId(currentRead._id))
+        setTimeout(() => {setIsArticleStatusBoxShown(true)}, 400) 
+        setTimeout(() => {setIsArticleStatusBoxShown(false)}, 6000) 
+        setArticleStatusMsg(`"${currentRead.titel}" # wurde als gelesen markiert`)
         localStorage.setItem("readArticleIds", JSON.stringify([...readArticleIds, currentRead._id]))
+    }
+    else if (currentViewed._id && !viewedArticleIds.includes(currentViewed._id) && !readArticleIds.includes(currentViewed._id)) {
+        dispatch(addViewedArticleId(currentViewed._id))
+        setTimeout(() => {setIsArticleStatusBoxShown(true)}, 400) 
+        setTimeout(() => {setIsArticleStatusBoxShown(false)}, 6000) 
+        setArticleStatusMsg(`"${currentViewed.titel}" # wurde zu deiner Readlist hinzugefügt`)
+        localStorage.setItem("viewedArticleIds", JSON.stringify([...viewedArticleIds, currentViewed._id]))
     }
 
     /* UX Gründe, falls zuvor im Artikel angezeigt rejected Nachricht angezeigt wurde */
     dispatch(setIsCommentDataPostingFailed(false))
-    
-    },[location])
 
+    },[location])
     return (
         <div>
             <main className='main'>
@@ -99,12 +181,17 @@ export default function Home (props) {
                 <h2 className='h2--home h2--home--preview'>
                     Zeug zum lesen - ohne Superlative und Verschnörkelung.
                 </h2>
-                <div className={`${readBoxClass}`}>
+                <SearchBar handleFormChange = {handleFormChange} searchData = {searchData}/>
+                <div className={`${articleStatusBoxClass}`}>
                     <div className='read--box'>
-                        <p className='read--message'>"{currentRead.titel}" <br />wurde als gelesen markiert.</p>
+                        <p className='read--message'>
+                            {articleStatusMsgSplit[0]} <br/>
+                            {articleStatusMsgSplit[1]}
+                        </p>
                     </div>
                 </div>
-                {previewEl}
+                {getPreview()} 
+                {}
             </section>
         </div>
     )   

@@ -70,18 +70,18 @@ export default function Form(props) {
   }
 
   return (
-    <form className='input--form' onSubmit={handleSubmit(onSubmit)}>
-      <div className='input--box'>
-        {errors.name && <p className='input--error'>Bitte gib hier deinen Namen an.</p>}
-        <input placeholder='Dein Name' className='input' {...register('name', { required: true })} />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className='comment--input'>
+        {errors.name && <p className='comment--input--error'>Bitte gib hier deinen Namen an.</p>}
+        <input placeholder='Dein Name' className='general--comment--input' {...register('name', { required: true })} />
       </div>
-      <div className='input--box'>
-        {errors.text && <p className='input--error'>Bitte gib hier deinen Kommentar an.</p>}
-        <TextareaAutosize onFocus={handleIsSubmitShown} placeholder='Dein Kommentar' className='input input--text' {...register('text', { required: true })} />
+      <div className='comment--input'>
+        {errors.text && <p className='comment--input--error'>Bitte gib hier deinen Kommentar an.</p>}
+        <TextareaAutosize onFocus={handleIsSubmitShown} placeholder='Dein Kommentar' className='general--comment--input comment--input--text' {...register('text', { required: true })} />
       </div>
-      <div className='input--box--submit'>
-        <div className='input--box'>
-          {isCommentDataPostingFailed && <p className='input--error'>Da lief etwas schief...</p>}
+      <div className='comment--input--submit'>
+        <div className='comment--input'>
+          {isCommentDataPostingFailed && <p className='comment--input--error'>Da lief etwas schief...</p>}
           <CommonButton  
                       className={submitClass}
                       delay={200} 
@@ -91,7 +91,7 @@ export default function Form(props) {
                       Kommentieren
           </CommonButton>
           <CommonButton  
-                      className={`${submitClass} input--submit--cancel`}
+                      className={`${submitClass}`}
                       sx={{
                         marginLeft: "1em",
                         color: "#6E6E6E",

@@ -20,27 +20,31 @@ const articleDataSlice = createSlice({
             titel: "",
             imgLokal: ""
         }],
-        readArticleIds: JSON.parse(localStorage.getItem("readArticleIds"))?
-        JSON.parse(localStorage.getItem("readArticleIds")):
-        [],
+        readArticleIds: 
+            JSON.parse(localStorage.getItem("readArticleIds"))?
+            JSON.parse(localStorage.getItem("readArticleIds")):
+            [],
+        viewedArticleIds:
+            JSON.parse(localStorage.getItem("viewedArticleIds"))?
+            JSON.parse(localStorage.getItem("viewedArticleIds")):
+            [],
         currentRead: {},
-        currentArticleIndex: "",
-        isReadBoxShown: false,
+        currentViewed: "",
         isArticleDataLoading: true,
         isArticleDataLoadingFailed: false
     },
     reducers: {
-        addArticleId: (state, action) => {
-                state.readArticleIds.push(action.payload)
+        addReadArticleId: (state, action) => {
+            state.readArticleIds.push(action.payload)
+        },
+        addViewedArticleId: (state, action) => {
+            state.viewedArticleIds.push(action.payload)
         },
         setCurrentRead: (state, action) => {
             state.currentRead = action.payload
         },
-        toggleIsReadBoxShown: (state, action) => {
-            state.isReadBoxShown = !state.isReadBoxShown
-        },
-        setCurrentArticleIndex: (state, action) => {
-            state.currentArticleIndex = action.payload
+        setCurrentViewed: (state, action) => {
+            state.currentViewed = action.payload
         }
     },
     extraReducers: {
@@ -67,17 +71,17 @@ const articleDataSlice = createSlice({
 export const selectArticles = (state) => state.articleData.articles
 
 export const selectReadArticleIds = (state) => state.articleData.readArticleIds
+export const selectViewedArticleIds = (state) => state.articleData.viewedArticleIds
 export const selectCurrentRead = (state) => state.articleData.currentRead
-export const selectIsReadBoxShown = (state) => state.articleData.isReadBoxShown
-export const selectCurrentArticleIndex = (state) => state.articleData.currentArticleIndex
+export const selectCurrentViewed = (state) => state.articleData.currentViewed
 
 export const selectIsArticleDataLoading = (state) => state.articleData.isArticleDataLoading
 export const selectisArticleDataLoadingFailed = (state) => state.articleData.isArticleDataLoadingFailed
 
-export const {addArticleId} = articleDataSlice.actions
+export const {addReadArticleId} = articleDataSlice.actions
+export const {addViewedArticleId} = articleDataSlice.actions
 export const {setCurrentRead} = articleDataSlice.actions
-export const {toggleIsReadBoxShown} = articleDataSlice.actions
-export const {setCurrentArticleIndex} = articleDataSlice.actions
+export const {setCurrentViewed} = articleDataSlice.actions
 
 /* wird als articleDataReducer in index.js importiert */
 export default articleDataSlice.reducer
