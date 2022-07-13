@@ -12,8 +12,6 @@ import { commonButtonTheme } from "./theme/commonButtonTheme";
 import './styles.css';
 
 const render = () => {
-    console.log("index ran")
-
     store.dispatch(loadAllArticles())
     store.dispatch(loadAllComments())
 

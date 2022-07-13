@@ -1,7 +1,9 @@
-// import Swiper core and required modules
-import {Pagination, A11y, Keyboard, Mousewheel} from 'swiper';
+import CommonSlide from '../Common/CommonSlide';
 
-import { Swiper, SwiperSlide } from 'swiper/react';
+// import Swiper core and required modules
+import {A11y, Keyboard, Mousewheel} from 'swiper';
+
+import { Swiper, SwiperSlide, useSwiperSlide} from 'swiper/react';
 
 import slider1 from "../images/slider1.jpg"
 import slider2 from "../images/slider2.jpeg"
@@ -15,7 +17,6 @@ import slider8 from "../images/slider8.jpeg"
 
 // Import Swiper styles
 import 'swiper/css';
-
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
@@ -24,13 +25,16 @@ import "swiper/css/mousewheel";
 
 
 export default () => {
+  const swiperSlide = useSwiperSlide();
+
+
   return (
     <Swiper
       // install Swiper modules
 
       className='swiper'
-      modules={[Pagination, A11y, Keyboard, Mousewheel]}
-      spaceBetween={10}
+      modules={[A11y, Keyboard, Mousewheel]}
+      spaceBetween={15}
       keyboard = {{
         enabled: true
       }}
@@ -42,28 +46,52 @@ export default () => {
       slidesPerView={"auto"}
     >
       <SwiperSlide className='swiper__slide'>
-            <img src={slider1}  className="swiper__slide--img" alt=''></img>
+            <CommonSlide 
+            img={slider1}
+            slidenum={0}
+            />
       </SwiperSlide>
       <SwiperSlide className='swiper__slide swiper__slide--width'>
-            <img src={slider2}  className="swiper__slide--img" alt=''></img>
+            <CommonSlide 
+            img={slider2}
+            slidenum={1}
+            />
       </SwiperSlide>
       <SwiperSlide className='swiper__slide'>
-            <img src={slider3}  className="swiper__slide--img" alt=''></img>
+            <CommonSlide 
+            img={slider3}
+            slidenum={2}
+            />
       </SwiperSlide>
       <SwiperSlide className='swiper__slide swiper__slide--width'>
-            <img src={slider4}  className="swiper__slide--img" alt=''></img>
+            <CommonSlide 
+            img={slider4}
+            slidenum={3}
+            />
       </SwiperSlide>
       <SwiperSlide className='swiper__slide'>
-            <img src={slider5}  className="swiper__slide--img" alt=''></img>
+            <CommonSlide 
+            img={slider5}
+            slidenum={4}
+            />
       </SwiperSlide>
       <SwiperSlide className='swiper__slide swiper__slide--width'>
-            <img src={slider6}  className="swiper__slide--img" alt=''></img>
+            <CommonSlide 
+            img={slider6}
+            slidenum={5}
+            />
       </SwiperSlide>
       <SwiperSlide className='swiper__slide'>
-            <img src={slider7} className="swiper__slide--img"  alt=''></img>
+            <CommonSlide 
+            img={slider7}
+            slidenum={6}
+            />
       </SwiperSlide>
       <SwiperSlide className='swiper__slide swiper__slide--width'>
-            <img src={slider8} className="swiper__slide--img"  alt=''></img>
+            <CommonSlide 
+            img={slider8}
+            slidenum={7}
+            />
       </SwiperSlide>
     </Swiper>
   );

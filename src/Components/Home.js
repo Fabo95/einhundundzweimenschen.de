@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react'
+import React, {useRef, useMemo} from 'react'
 import {useLocation} from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowTurnDown } from '@fortawesome/free-solid-svg-icons';
@@ -45,22 +45,24 @@ export default function Home (props) {
     const location = useLocation()
     const ref = useRef(null)
 
-    /* Hier wird das articles Array nach search-value gefiltert, sodass alles weitere immer mit dem searchedArticles stattfindet */
+    /* Hier wird das articles Array nach search (dem was in der SearchBar eingegeben wurde) gefiltert, sodass alles weitere immer mit dem searchedArticles stattfindet */
     let searchedArticles = getSearchedArticles(articles, searchData.search)
 
-    const allPreviewEl = searchedArticles.map((article, index) => {
-        return (
-            <Preview 
-                key = {index}
-                index = {index}
-                _id = {article._id}
-                beschreibung= {article.beschreibung}
-                thema= {article.thema}
-                titel= {article.titel}
-                imgLokal= {article.imgLokal}
-            />)
-        }
-    )
+    const allPreviewEl = useMemo(()=> {
+        return searchedArticles.map((article, index) => {
+            return (
+                <Preview 
+                    key = {index}
+                    index = {index}
+                    _id = {article._id}
+                    beschreibung= {article.beschreibung}
+                    thema= {article.thema}
+                    titel= {article.titel}
+                    imgLokal= {article.imgLokal}
+                />)
+            }
+        )
+    }, []) 
 
     const readArticles = searchedArticles.filter((article, index) => {
         return readArticleIds.includes(article._id)
@@ -97,8 +99,6 @@ export default function Home (props) {
             />)
         }
     )
-
-    console.log(searchData)
     function handleFormChange (e) {
         const {name, value, innerText} = e.target
         setSearchData(prevSearchData => {
@@ -156,12 +156,12 @@ export default function Home (props) {
         dispatch(addReadArticleId(currentRead._id))
         setTimeout(() => {setIsArticleStatusBoxShown(true)}, 400) 
         setTimeout(() => {setIsArticleStatusBoxShown(false)}, 6000) 
-        setArticleStatusMsg(`"${currentRead.titel}" # wurde als gelesen markiert`)
-        localStorage.setItem("readArticleIds", JSON.stringify([...readArticleIds, currentRead._id]))
+        setArticleStatusMsg(`Du findest"${currentRead.titel}" # nun unter den gelesenen Artikeln.`)
         const newViewedArticleIds =  viewedArticleIds.filter(id => {
             return id !== currentRead._id
         })
         dispatch(updateViewedArticleIds(newViewedArticleIds))
+        localStorage.setItem("readArticleIds", JSON.stringify([...readArticleIds, currentRead._id]))
         localStorage.setItem("viewedArticleIds", JSON.stringify(newViewedArticleIds))
 
     }
@@ -169,7 +169,7 @@ export default function Home (props) {
         dispatch(addViewedArticleId(currentViewed._id))
         setTimeout(() => {setIsArticleStatusBoxShown(true)}, 400) 
         setTimeout(() => {setIsArticleStatusBoxShown(false)}, 6000) 
-        setArticleStatusMsg(`"${currentViewed.titel}" # wurde zu deiner Readlist hinzugefügt`)
+        setArticleStatusMsg(`Du findest "${currentViewed.titel}" # nun unter den angefangenen Artikeln.`)
         localStorage.setItem("viewedArticleIds", JSON.stringify([...viewedArticleIds, currentViewed._id]))
     }
 
@@ -190,17 +190,14 @@ export default function Home (props) {
             <section>
                 <div className='container'>
                     <h2 className='h2--home h2--home--geist'> Ein neues Format - ungefiltert und nicht "Instagrammable"</h2>
-                    <p className="p--teaser">
-                        ... okay, die Bilder sind vielleicht Instagrammable.
-                    </p>
                 </div>
                 <Swiper/>
             </section>
             <section>
                 <div className='container'>
-                    <div className='about--flex'>
-                        <h2 className='h2--home h2--home--about'>Warum findet ihr uns hier?</h2>
-                        <p className='p--teaser'>Ihr findet uns hier aus ein paar einfachen Gründen. Wir wollen uns selbst ausprobieren und das, was wir können, miteinander verschmelzen lassen. Wir haben Freude daran, uns mit der Herausforderung auseinanderzusetzen, einen gemeinsamen authentischen Stil zu finden. Wir probieren herum und laden euch ein, diese Symbiose wachsen zu sehen. Einer baut das Gerüst, eine füllt die Räume. Wir basteln Stück für Stück, für uns, für euch, für jeden, der Spaß an wirrem, ehrlichen und freien Content hat.</p>
+                    <div className='about'>
+                        <h2 className='h2--home'>Warum findet ihr uns hier?</h2>
+                        <p className='about--teaser'>... weil wir uns selbst ausprobieren und das, was wir können, miteinanderverschmelzen lassen. Wir haben Freude daran, uns mit der Herausforderung auseinanderzusetzen, einengemeinsamen authentischen Stil zu finden. Wir probieren herum und laden euch ein, diese Symbiosewachsen zu sehen.</p> 
                     </div>
                 </div>
             </section>

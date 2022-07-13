@@ -11,6 +11,7 @@ import CommonButton from '../Common/CommonButton';
 
 export default function Preview (props) {
 
+    console.log("RAN")
     const readArticleIds = useSelector(selectReadArticleIds)
 
     return (
