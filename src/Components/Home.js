@@ -1,4 +1,4 @@
-import React, {useRef, useMemo} from 'react'
+import React, {useRef} from 'react'
 import {useLocation} from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowTurnDown } from '@fortawesome/free-solid-svg-icons';
@@ -48,8 +48,7 @@ export default function Home (props) {
     /* Hier wird das articles Array nach search (dem was in der SearchBar eingegeben wurde) gefiltert, sodass alles weitere immer mit dem searchedArticles stattfindet */
     let searchedArticles = getSearchedArticles(articles, searchData.search)
 
-    const allPreviewEl = useMemo(()=> {
-        return searchedArticles.map((article, index) => {
+    const allPreviewEl = searchedArticles.map((article, index) => {
             return (
                 <Preview 
                     key = {index}
@@ -62,7 +61,6 @@ export default function Home (props) {
                 />)
             }
         )
-    }, []) 
 
     const readArticles = searchedArticles.filter((article, index) => {
         return readArticleIds.includes(article._id)
@@ -156,7 +154,7 @@ export default function Home (props) {
         dispatch(addReadArticleId(currentRead._id))
         setTimeout(() => {setIsArticleStatusBoxShown(true)}, 400) 
         setTimeout(() => {setIsArticleStatusBoxShown(false)}, 6000) 
-        setArticleStatusMsg(`Du findest"${currentRead.titel}" # nun unter den gelesenen Artikeln.`)
+        setArticleStatusMsg(`Du findest "${currentRead.titel}" # nun unter den gelesenen Artikeln.`)
         const newViewedArticleIds =  viewedArticleIds.filter(id => {
             return id !== currentRead._id
         })

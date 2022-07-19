@@ -11,7 +11,7 @@ export default function ArticleHeader ({article}) {
     const imgAuthorSrc = article.author === "Kerstin Kümpel" ? kerstin : fabian
 
     return (
-        <>
+        <div>
             <div className='article--meta--flex'>
                 <img className='img--author img--author--article' src={imgAuthorSrc} alt="Ein charmanter Kerl / eine charmante Lady / Ein wilder Hund"></img>
                 <div className='article--meta--item'>
@@ -40,6 +40,6 @@ export default function ArticleHeader ({article}) {
                 </p> */}
             
             <img className='article__img' src={`../images/${article.imgLokal}`} alt="Dein Lieblingsautor"></img>
-        </>
+        </div>
     )
 }

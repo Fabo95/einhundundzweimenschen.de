@@ -7,7 +7,7 @@ import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 import CommonIcon from '../Common/CommonIcon';
 
-import fabian from "../images/fabian.jpeg"
+import fabian from "../images/fabian.jpeg" 
 import kerstin from "../images/kerstin.jpeg"
 import matze from "../images/matze.jpeg"
 

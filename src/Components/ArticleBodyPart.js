@@ -4,9 +4,9 @@ export default function ArticleBodyPart (props) {
 
     const [absatz, titel] = Object.keys(props)
     return (
-        <>
+        <div>
             {props[titel] && <h3 className='text--title'>{props[titel]}</h3>}
             {props[absatz] && <p className='text--article'>{props[absatz]}</p>}
-        </>
+        </div>
     )
 }

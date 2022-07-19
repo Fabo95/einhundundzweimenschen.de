@@ -25,5 +25,4 @@ const render = () => {
         </Provider>
     );
 }
-
 render()

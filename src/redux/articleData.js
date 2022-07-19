@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const loadAllArticles = createAsyncThunk("articleData/loadAllArticles", async(arg, thunkAPI) => {
+
     const PROJECT_ID = process.env.REACT_APP_PUBLIC_SANITY_PROJECT_ID;
     const DATASET = "production";
     const QUERY = encodeURIComponent('*[_type == "data"] | order(_createdAt desc)');
@@ -64,6 +65,7 @@ const articleDataSlice = createSlice({
             state.articles = action.payload
         },
         [loadAllArticles.rejected] : (state, action) => {
+            console.log(action.payload)
             state.statusGet = "rejected"
             state.isArticleDataLoading = false
             state.isArticleDataLoadingFailed = true

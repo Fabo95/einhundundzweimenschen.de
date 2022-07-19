@@ -90,7 +90,7 @@ export default  function Article(props) {
 
     function getKnowledgeBox() {
         return (
-            <>
+            <div>
                 <div className='article--knowledge'>
                     <h3 className='text--title--know' onClick={toggleIsKnowledgeBodyShown} >
                         Wissenswertes {article.wtitel}
@@ -108,7 +108,7 @@ export default  function Article(props) {
                         {article.wabsatz5 && <p className='text--article'>{article.wabsatz5}</p>}
                     </div>
                 </div>
-            </>
+            </div>
         )
     }
 
